@@ -7,11 +7,11 @@ from langchain.messages import HumanMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.exceptions import OutputParserException # Importar para melhor tratamento de erros
 
-dotenv.load_dotenv("../.env")
-api_key=os.getenv('GOOGLE_API')
+# dotenv.load_dotenv("../.env")
+# api_key=os.getenv('GOOGLE_API')
 
-# Configuração da API Key (boa prática)
-os.environ["GOOGLE_API_KEY"] = api_key
+# # Configuração da API Key (boa prática)
+# os.environ["GOOGLE_API_KEY"] = api_key
 
 # Inicialização do Modelo
 llm = ChatGoogleGenerativeAI(
