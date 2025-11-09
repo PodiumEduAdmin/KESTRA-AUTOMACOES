@@ -9,4 +9,4 @@ say = os.environ['SAY'] + " there!"
 # say final será 'Hello from teste.py there!'
 
 # Se você quiser que o segundo script também produza um output, use a mesma estrutura:
-Kestra.outputs(say)
+Kestra.outputs({"final_message": say})
