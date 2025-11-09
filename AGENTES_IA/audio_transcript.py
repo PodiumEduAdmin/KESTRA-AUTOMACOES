@@ -6,6 +6,7 @@ import re
 from langchain.messages import HumanMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.exceptions import OutputParserException # Importar para melhor tratamento de erros
+from kestra import Kestra
 
 # dotenv.load_dotenv("../.env")
 # api_key=os.getenv('GOOGLE_API')
@@ -61,7 +62,7 @@ if r.status_code == 200:
         print("\n--- Transcrição do Áudio ---")
         print(f"{response.content}")
         print("----------------------------\n")
-
+        Kestra.outputs({"final_message": response.content})
     except OutputParserException as e:
         print(f"❌ Erro de Transcrição/LangChain: {e}")
     except Exception as e:
