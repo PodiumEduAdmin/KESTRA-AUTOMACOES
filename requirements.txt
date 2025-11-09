@@ -3,3 +3,4 @@ python-dotenv  # para o 'dotenv'
 langchain
 langchain-google-genai
 langchain-core  # Para langchain_core.exceptions e outros componentes essenciais
+kestra
