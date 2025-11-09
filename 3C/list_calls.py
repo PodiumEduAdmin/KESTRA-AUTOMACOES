@@ -8,7 +8,7 @@ dotenv.load_dotenv(
     "../.env"
 )
 manager_token=os.getenv("TOKEN_3C")
-BASE_URL=f"https://podium.3c.plus/api/v1/calls?api_token={manager_token}&simple_paginate=true&per_page=1000&page=0"
+BASE_URL=f"https://podium.3c.plus/api/v1/calls?api_token={manager_token}&simple_paginate=true&per_page=1000&page=2"
 
 # --- Função Auxiliar: Conversão de Tempo ---
 def time_to_seconds(time_str: str) -> int:

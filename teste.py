@@ -1,4 +1,7 @@
 from kestra import Kestra
-say = "Hello"
 
-Kestra.outputs(say)
+# Defina a variável que você quer passar
+output_value = "Hello from teste.py"
+
+# Envie um dicionário com o nome da chave (ex: 'hello_message')
+Kestra.outputs({"hello_message": output_value})
