@@ -1,86 +1,157 @@
 import requests
 import dotenv
 import os
-import time # Adicionado para pausar entre requisições (boa prática)
-from typing import Dict, List, Any
+import time
+import json
+from typing import Dict, List, Any, Optional
+from urllib.parse import urlparse, parse_qs, urlunparse, urlencode # Importado para manipulação segura de URL
+
+# Importa o cliente Kestra para gerenciamento de outputs
+from kestra import Kestra 
 
 dotenv.load_dotenv(
     "../.env"
 )
-manager_token=os.getenv("TOKEN_3C")
-BASE_URL=f"https://podium.3c.plus/api/v1/calls?api_token={manager_token}&simple_paginate=true&per_page=1000&page=2"
+
+# --- Configurações e Variáveis ---
+manager_token = os.getenv("TOKEN_3C")
+# Base URL original, sem nenhum parâmetro de query
+INITIAL_BASE_URL = "https://podium.3c.plus/api/v1/calls"
+
+# Parâmetros de filtro e paginação - Usados na PRIMEIRA requisição
+filters: Dict[str, Any] = {
+    "api_token": manager_token, 
+    "simple_paginate": "true",
+    "per_page": 1000,
+    
+    # Filtro de data:
+    "startDate": "2025-11-07 08:00:00",
+    "endDate": "2025-11-07 22:00:00",
+}
+MIN_CALL_SECONDS = 300 # 5 minutos * 60 segundos/min = 300 segundos
+
+# --- Variáveis de Execução ---
+all_filtered_calls: List[Dict[str, Any]] = []
+# next_url armazena a URL COMPLETA para a próxima requisição
+next_url: Optional[str] = INITIAL_BASE_URL
+requests_count = 0
+total_calls_processed = 0
+total_pages = "???"
 
 # --- Função Auxiliar: Conversão de Tempo ---
 def time_to_seconds(time_str: str) -> int:
     """Converte uma string de tempo 'HH:MM:SS' para segundos."""
     try:
-        # Divide a string em horas, minutos e segundos
         h, m, s = map(int, time_str.split(':'))
         return h * 3600 + m * 60 + s
     except ValueError:
-        # Retorna 0 em caso de formato inválido
         return 0
-    
-# Parâmetros de filtro e limites (data, por exemplo)
-# A API 3C Plus geralmente usa 'params' para filtros na URL
-filters = {
-    "startDate": "2025-11-07 08:00:00",
-    "endDate": "2025-11-07 10:00:00",
-    "page": 1, # Adicionamos o parâmetro 'page' inicial
-}
-all_filtered_calls: List[Dict[str, Any]] = [] # Lista para armazenar APENAS chamadas filtradas
-current_page = 0
-total_pages = 0 
-MIN_CALL_SECONDS = 300 # 5 minutos * 60 segundos/min = 300 segundos
 
+# --- Função de Correção: Garantir que o Token esteja na URL ---
+def ensure_token_in_url(url: str, token: str) -> str:
+    """Garante que o parâmetro 'api_token' esteja presente na URL, se estiver faltando."""
+    
+    # 1. Parseia a URL
+    parsed_url = urlparse(url)
+    query_params = parse_qs(parsed_url.query)
+    
+    # 2. Adiciona o token se não estiver presente
+    if 'api_token' not in query_params:
+        query_params['api_token'] = [token]
+        
+        # 3. Reconstrói a query string
+        new_query = urlencode(query_params, doseq=True)
+        
+        # 4. Reconstrói a URL completa
+        return urlunparse(parsed_url._replace(query=new_query))
+        
+    return url # Token já estava presente
+
+
+# --- Loop de Paginação (usando 'next_url') ---
 print(f"Iniciando coleta e filtragem de dados para chamadas > 5 min e com agente...")
 
-# --- Loop de Paginação ---
-while current_page <= total_pages:
+while next_url:
+    requests_count += 1
     
-    filters['page'] = current_page 
+    # Define a URL e os parâmetros para a requisição
+    if requests_count == 1:
+        # PRIMEIRA REQUISIÇÃO: Usa a URL base e todos os filtros via 'params'
+        url_to_request = INITIAL_BASE_URL
+        params_to_use = filters
+    else:
+        # REQUISIÇÕES SUBSEQUENTES: 
+        # 1. Usa a URL 'next' e a corrige (adicionando o token)
+        # 2. NÃO PASSA PARÂMETROS ADICIONAIS no 'params'
+        url_to_request = ensure_token_in_url(next_url, manager_token)
+        params_to_use = None # O token e a paginação já estão na url_to_request
+
+    print(f"Buscando e filtrando Request #{requests_count}. Total de Páginas: {total_pages}")
+    # Nota: Não logamos a URL completa, para não expor o token no log.
     
-    print(f"Buscando e filtrando Página {current_page} / {total_pages}...")
-    
-    r = requests.get(BASE_URL, params=filters)
+    # 1. Faz a Requisição
+    r = requests.get(url_to_request, params=params_to_use)
 
     if r.status_code != 200:
-        print(f"❌ Erro na requisição (Status: {r.status_code}) na página {current_page}. Encerrando.")
+        print(f"❌ Erro na requisição (Status: {r.status_code}) na URL: {url_to_request}. Encerrando.")
         break
         
     try:
         item = r.json()
-        print(item)
     except requests.exceptions.JSONDecodeError:
         print("❌ Erro ao decodificar JSON. Encerrando.")
+        print(f"Conteúdo da resposta: {r.text[:200]}...")
         break
 
-    # 1. Extrai os dados e informações de paginação
+    # 2. Extrai os dados e informações de paginação
     data = item.get('data', [])
     pagination_info = item.get('meta', {}).get("pagination", {})
-    total_pages = pagination_info.get('total_pages', 0)
     
-    # 2. Loop de FILTRAGEM
+    # Atualiza as variáveis de controle
+    total_pages = pagination_info.get('total_pages', total_pages)
+    current_page = pagination_info.get('current_page', 0)
+    
+    # 3. Atualiza o next_url (será None se for a última página)
+    # Este é o link FORNECIDO PELA API, que será corrigido no topo do loop (se necessário)
+    next_link = pagination_info.get('links', {}).get('next')
+    next_url = next_link
+    
+    # 4. Loop de FILTRAGEM
     for call in data:
-        # A API tem 'speaking_time' e 'speaking_with_agent_time'. 
-        # Vou usar 'speaking_time' que parece ser o tempo total de fala na chamada.
         speaking_time_seconds = time_to_seconds(call.get('speaking_time', '00:00:00'))
         
-        # Condições de filtro:
-        # a) deve ter agente (has_agent == True)
-        # b) tempo de chamada (speaking_time) > 5 minutos (300 segundos)
+        # Filtros: deve ter agente E tempo de chamada > 5 minutos
         if call.get('has_agent', False) and speaking_time_seconds > MIN_CALL_SECONDS:
             all_filtered_calls.append(call)
+            
+    total_calls_processed += len(data)
     
-    print(f"  -> {len(data)} itens processados. Total filtrado acumulado: {len(all_filtered_calls)}")
+    print(f"  -> {len(data)} itens processados. Pág {current_page} de {total_pages}. Filtrados acumulados: {len(all_filtered_calls)}")
 
-    # 3. Prepara para a próxima iteração
-    current_page += 1
-    
-    # Pausa entre requisições
-    if current_page <= total_pages:
+    # 5. Pausa entre requisições (somente se houver próxima página)
+    if next_url:
          time.sleep(0.5) 
     
-# --- Fim do Processamento ---
+# --- Fim do Processamento e Exportação ---
 print(f"\n✅ Paginação e filtragem finalizadas.")
+print(f"Total de chamadas processadas: {total_calls_processed}")
 print(f"Total de chamadas coletadas e filtradas (com agente e > 5 min): {len(all_filtered_calls)}")
+
+
+# Define o nome do arquivo de saída
+OUTPUT_FILENAME = "filtered_3c_calls.json"
+
+# Salva o resultado no sistema de arquivos local
+with open(OUTPUT_FILENAME, 'w') as f:
+    json.dump(all_filtered_calls, f, indent=2)
+
+print(f"Arquivo de saída '{OUTPUT_FILENAME}' salvo com sucesso.")
+
+# Envia o arquivo para o Internal Storage do Kestra e cria um output para o Flow
+# Kestra.outputs espera um dicionário. A chave 'uri' será usada para referenciar o arquivo.
+# Kestra.outputs({
+#     "filtered_calls_uri": Kestra.store_file(OUTPUT_FILENAME),
+#     "total_filtered_count": len(all_filtered_calls)
+# })
+
+print(f"Output 'filtered_calls_uri' e 'total_filtered_count' enviados para o Kestra.")

@@ -12,19 +12,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import base64
 from typing import Optional, Dict, Any, List
-
-# --- 1. IMPORTAÇÕES DOS SEUS MÓDULOS ---
-# Importa as funções dos arquivos que você criou
-try:
-    from base_api_pipe import pipe_api
-    from add_person import add_person
-    from add_deal import create_deal # Usando create_deal que corrigimos anteriormente
-    print("Módulos locais (base_api_pipe, add_person, add_deal) importados com sucesso!")
-except ImportError as e:
-    print(f"ERRO DE IMPORTAÇÃO: {e}")
-    print("Certifique-se que os arquivos 'base_api_pipe.py', 'add_person.py' e 'add_deal.py' estão no mesmo diretório.")
-    exit()
-
+from CLASSES.pipe_class import PipedriveAPI
 
 dotenv.load_dotenv()
 # --- 2. CONFIGURAÇÕES GOOGLE SHEETS ---
@@ -35,7 +23,6 @@ SPREADSHEET_ID = os.getenv('SPREADSHEET_ID')
 # Caminho para o seu arquivo JSON de credenciais
 SERVICE_ACCOUNT_FILE = 'credentials.json'
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
 
 def ler_dados_planilha(range_name,plan_id):
     """Lê um intervalo da planilha e retorna um DataFrame do Pandas."""
@@ -75,8 +62,6 @@ except Exception as e:
     exit() # Interrompe o script se a conexão falhar
 
 
-# --- 3. FUNÇÃO DE REQUISIÇÃO GENÉRICA (Usada pelo 'digitalmanager.guru') ---
-# MANTEMOS esta função aqui, pois ela é diferente da 'pipe_api'
 def fazer_requisicao_n8n_style(
     url: str,
     method: str = "GET",
@@ -147,48 +132,16 @@ def fazer_requisicao_n8n_style(
         print(f"Ocorreu um erro inesperado: {err}")
         raise
 
-# --- 4. AS FUNÇÕES 'pipe_api', 'add_person' e 'make_deal' FORAM REMOVIDAS ---
-# Elas agora são importadas no topo do arquivo.
-
 
 # --- 5. EXECUÇÃO PRINCIPAL (ORQUESTRADOR) ---
 if __name__ == '__main__':
     
-    # --- Bloco de Teste do digitalmanager.guru (Mantido) ---
-    # API_URL = "https://digitalmanager.guru/api/v2/transactions"
-    # parametros_de_consulta = {
-    #     'ordered_at_ini': '2025-10-06',
-    #     'ordered_at_end': '2025-10-31',
-    #     'status[]': 'approved'
-    # }
-    # cabecalhos_personalizados_guru = {
-    #     'Authorization': 'Bearer a02945ac-99f6-4859-9128-d3ccc4cd77fb|KaXfiSztRebl6XJzYGlV9IwPWcoGmNaILiRqWgGjf90055bc',
-    #     'Accept': 'application/json' 
-    # }
-    # print(f"Fazendo requisição GET para: {API_URL}")
-    # try:
-    #     response_get = fazer_requisicao_n8n_style(
-    #         url=API_URL,
-    #         method="GET",
-    #         query_params=parametros_de_consulta,
-    #         headers=cabecalhos_personalizados_guru
-    #     )
-    #     print("\n--- Resposta da Requisição GET (Guru) ---")
-    #     print(f"Status Code: {response_get.status_code}")
-        
-    # except Exception as e:
-    #     print(f"\nFalha na execução do teste 'digitalmanager.guru': {e}")
-
     print("-" * 40)
     print("Iniciando processo de sincronia com Pipedrive...")
 
     # --- Configuração Pipedrive ---
     API_KEY = os.getenv("API_KEY")
     # Este cabeçalho será passado para as funções importadas
-    cabecalhos_pipedrive = {
-        'x-api-token': API_KEY,
-        'Accept': 'application/json' 
-    }
 
     # --- Leitura do Google Sheets ---
     INTERVALO_LEITURA = "erros!A1:G"
@@ -207,22 +160,13 @@ if __name__ == '__main__':
         # 1. BUSCAR A PESSOA NO PIPEDRIVE
 # 1. BUSCAR A PESSOA NO PIPEDRIVE
         try:
-            url_pipe_search = "https://api.pipedrive.com/api/v2/persons/search"
             search_term = tab['email contato']
             
-            query_params_pipe = {
-                'term': search_term, 
-                'exact_match': 'true'
-            }
+            API_KEY = os.getenv('API_KEY')
+            api = PipedriveAPI(api_token=API_KEY)
             
-            response_get = pipe_api(
-                url=url_pipe_search,
-                method="GET",
-                query_params=query_params_pipe,
-                headers=cabecalhos_pipedrive # Passando os cabeçalhos
-            )
-            
-            dados_pipedrive = response_get.json()
+            dados_pipedrive=api.search_persons(search_term,"email")
+            dados_pipedrive = dados_pipedrive.json()
             
             # --- ESTA É A PARTE CORRIGIDA ---
             items = dados_pipedrive.get('data', {}).get('items', [])
@@ -250,18 +194,15 @@ if __name__ == '__main__':
             if not id_person:
                 person_name = tab['nome contato']
                 person_email = tab['email contato']
+                empresa = "empresa"
+                data_aprov=dt.date.today().strftime('%Y-%m-%d')
 
                 print(f"Pessoa não encontrada. Criando nova pessoa: {person_name}")
                 
+                person_data=api.add_person(person_name,person_email,empresa,empresa)
                 # Chama a função importada de 'add_person.py'
-                response_post = add_person(
-                    person_name=person_name, 
-                    email=person_email,
-                    empresa="NÃO ENCONTRADO",
-                    data_aprov=dt.date.today().strftime('%Y-%m-%d')
-                )
                 
-                person_data = response_post.json().get('data', {})
+                person_data = person_data.json().get('data', {})
                 id_person = person_data.get('id')
                 name_person = person_data.get('name')
                 barbearia=person_data.get('custom_fields')[0]
@@ -281,17 +222,19 @@ if __name__ == '__main__':
             data_aprov = tab['data aprovacao']
             oferta = tab['nome oferta']
             doc = int(tab['doc contato'])
-
+            funil = ""
+            
             print(f"Criando/atualizando Negócio (Deal) para {name_person}...")
             
             # Chama a função importada de 'add_deal.py'
-            deal_response = create_deal(
+            deal_response = api.create_deal(
                 person_id=id_person,
-                person_name=name_person, # A função 'create_deal' precisa do nome para o título
+                person_name=name_person,
                 empresa=empresa,
                 data_aprov=data_aprov,
                 oferta=oferta,
-                doc=doc
+                doc=doc,
+                funil = funil
             )
             
             deal_id = deal_response.json().get('data', {}).get('id')
