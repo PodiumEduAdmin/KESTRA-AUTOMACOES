@@ -23,7 +23,7 @@ llm = ChatGoogleGenerativeAI(
     max_retries=2,
 )
 
-url = "https://podium.3c.plus/api/v1/calls/690e2499e2568a660041dd85/recording"
+url = os.environ['URL']
 r = requests.get(url)
 
 # 2. Verifique o status da resposta
