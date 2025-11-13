@@ -10,14 +10,14 @@ dotenv.load_dotenv("../.env")
 notion_token = os.getenv("NOTION_TOKEN")
 # O ID pode ser de uma página comum ou de um database, 
 # mas o endpoint é para buscar as propriedades dessa página.
-page_id = "26b3bbf5b1e18196b1ddc3bfb5b7cb19" 
+# page_id = "26b3bbf5b1e18196b1ddc3bfb5b7cb19"
 
 class NotiondriveAPI:
     """
     Classe para interagir com a API do Pipedrive, gerenciando a autenticação
     e encapsulando métodos para GET, POST, PUT, etc.
     """
-    NOTION_VERSION = "2025-09-03"
+    NOTION_VERSION ="2025-09-03"
 
 # O 'self' é a referência à própria instância da classe (o objeto que está sendo criado)
     def __init__(self, api_token: str, base_url: str = "https://api.notion.com/"):
@@ -27,10 +27,9 @@ class NotiondriveAPI:
         
         # Configuração da Sessão (Melhora performance e gerencia headers)
         self.session = requests.Session()
-        self.session.params = {'api_token': self.api_token}
         self.session.headers.update({
             "Authorization": f"Bearer {self.api_token}",
-            "Notion-Version:": self.NOTION_VERSION
+            "Notion-Version": self.NOTION_VERSION.strip()
         })
 
     def _request_api(
@@ -65,7 +64,7 @@ class NotiondriveAPI:
                 url=full_url,
                 params=query_params,
                 json=data, 
-                timeout=30
+                timeout=60
             )
 
             response.raise_for_status()
@@ -85,14 +84,14 @@ class NotiondriveAPI:
             print(f"Ocorreu um erro na requisição: {err}")
             raise
 
-    def page_props(self, page_payload: Dict[str, Any]) -> Dict[str, Any]:
+    def page_props(self,
+                   page_id):
 
         endpoint = f"v1/pages/{page_id.lstrip('/')}"
 
         return self._request_api(
             endpoint=endpoint,
-            method="GET",
-            data=page_payload
+            method="GET"
         )
   
     def create_page(self, page_payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -108,3 +107,55 @@ class NotiondriveAPI:
             data=page_payload # O payload (seu corpo do curl)
         )
     
+    def database_props(
+            self,
+            data_source_id,
+            method="GET"
+            ):
+        
+        endpoint =f"v1/data_sources/{data_source_id.lstrip('/')}"
+        return self._request_api(
+            endpoint=endpoint,
+            method="GET",
+        )
+    
+    def database_Retrieve(
+            self,
+            database_id,
+            method="GET"
+            ):
+        
+        endpoint =f"v1/databases/{database_id.lstrip('/')}"
+        return self._request_api(
+            endpoint=endpoint,
+            method="GET",
+        )
+    
+    def page_update(
+            self,
+            page_id,
+            page_payload: Dict[str, Any]
+            ):
+        
+        endpoint = f"v1/pages/{page_id.lstrip('/')}"
+        return self._request_api(
+            endpoint=endpoint,
+            method="PATCH",
+            data=page_payload
+        )
+    
+    def append_children(
+            self,
+            page_id: str,
+            children_payload: Dict[str, Any]
+            ):
+        
+        # Endpoint para adicionar blocos à página (visto que o page_id atua como block_id)
+        endpoint = f"v1/blocks/{page_id.lstrip('/')}/children"
+        
+        # O payload deve ser um dicionário com a chave "children": [...]
+        return self._request_api(
+            endpoint=endpoint,
+            method="PATCH", 
+            data=children_payload
+        )
