@@ -898,14 +898,14 @@ if r.status_code == 200:
         # Kestra.outputs({"response": result["structured_response"]})
    
         # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
-        cliente = os.environ('cliente') 
-        SDR=os.environ('SDR')
+        cliente = os.environ['cliente'] 
+        SDR=os.environ['SDR']
         Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
-        id_pipedrive=os.environ('id_pipedrive')
+        id_pipedrive=os.environ['id_pipedrive']
         Link_da_Ligação= url
         Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
-        Faturamento=os.environ('Faturamento')
-        Campanha=os.environ('Campanha')
+        Faturamento=os.environ['Faturamento']
+        Campanha=os.environ['Campanha']
 
         # CORREÇÃO 1: Tratar temperatura e perfil comportamental como string de forma segura
         Tempertura_IA = str(result["structured_response"]["7. TEMPERATURA"]["temperatura_do_lead"]).replace("%", "").strip() 
