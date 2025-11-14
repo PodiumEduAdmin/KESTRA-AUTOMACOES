@@ -20,7 +20,7 @@ import json
 # api_key = os.getenv('GOOGLE_API')
 # apikey_pipe = os.getenv("API_KEY")
 # notion_token = os.getenv("NOTION_TOKEN")
-apikey_pipe = os.environ["API_KEY"]
+apikey_pipe = os.environ["apikey_pipe"]
 notion_token = os.environ['NOTION_TOKEN']
 api_notion = NotiondriveAPI(notion_token)
 api_pipedrive = PipedriveAPI(apikey_pipe)
@@ -1702,7 +1702,7 @@ if r.status_code == 200:
         }
 
         api_pipedrive.post_notes(payload_pipe)
-        
+        print("Enviado para o Pipedrive")
     except OutputParserException as e:
         print(f"❌ Erro de Transcrição/LangChain: {e}")
     except Exception as e:
