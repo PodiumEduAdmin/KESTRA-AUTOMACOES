@@ -891,7 +891,7 @@ if r.status_code == 200:
 
         result = agent.invoke({
                     "messages": [
-                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}, Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema, não use Notas quebradas com ','. Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura."}
+                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}, Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema, AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5. Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura."}
                     ]
                 })
         
@@ -1105,7 +1105,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"1. Conhece o produto ou o Lincohn?\n{conhece_produto_ou_lincohn}\n\n2. Faturamento mensal estimado:{faturamento_mensal_estimado}\n\n3. Tamanho da equipe:{tamanho_da_equipe}\n\n4. Principal queixa/dificuldade:\n{principal_queixa_dificuldade}\n\n5. Gerou agendamento?{gerou_agendamento}\n\n6. Motivo para desqualificação (se houver):{motivo_desqualificacao}\n"
+                                    "content": f"1. Conhece o produto ou o Lincohn?\n{conhece_produto_ou_lincohn}\n\n2. Faturamento mensal estimado:{faturamento_mensal_estimado}\n\n3. Tamanho da equipe:{tamanho_da_equipe}\n\n4. Principal queixa/dificuldade:\n{principal_queixa_dificuldade}\n\n5. Gerou agendamento?{gerou_agendamento}\n\n6. Motivo para desqualificação (se houver):\n{motivo_desqualificacao}\n"
                                 }
                             }
                         ]
