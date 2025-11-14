@@ -18,11 +18,12 @@ import json
 # --- Configurações Iniciais ---
 # dotenv.load_dotenv("./.env")
 # api_key = os.getenv('GOOGLE_API')
-
+# apikey_pipe = os.getenv("API_KEY")
 # notion_token = os.getenv("NOTION_TOKEN")
+apikey_pipe = os.environ["API_KEY"]
 notion_token = os.environ['NOTION_TOKEN']
 api_notion = NotiondriveAPI(notion_token)
-
+api_pipedrive = PipedriveAPI(apikey_pipe)
 # os.environ["GOOGLE_API_KEY"] = api_key
 
 # Inicialização do Modelo
@@ -34,7 +35,7 @@ llm = ChatGoogleGenerativeAI(
     max_retries=2,
 )
 
-# url = "https://podium.3c.plus/api/v1/calls/6915e4e5ecc4600c8b673031/recording"
+# url = "https://podium.3c.plus/api/v1/calls/69176b63faa55307c6629ebd/recording"
 
 url = os.environ['URL']
 
@@ -1557,6 +1558,151 @@ if r.status_code == 200:
 
         print("----------------------------\n")
 
+        payload_pipe = {
+            "deal_id": id_pipedrive,
+            "content": f"""
+                <h3>&#x1F4CB; ANÁLISE DE LEAD &mdash; PERFIL DO AVATAR</h3>
+
+                <p>
+                    <strong>1. Conhece o produto ou o Lincohn?</strong> {conhece_produto_ou_lincohn}<br>
+                    <strong>2. Faturamento mensal estimado:</strong> {faturamento_mensal_estimado}<br>
+                    <strong>3. Tamanho da equipe:</strong> {tamanho_da_equipe}<br>
+                    <strong>4. Principal queixa/dificuldade:</strong> {principal_queixa_dificuldade}<br>
+                    <strong>5. Gerou agendamento?</strong> {gerou_agendamento}<br>
+                    <strong>6. Motivo para desqualificação (se houver):</strong> {motivo_desqualificacao}<br>
+                </p>
+
+                <p>
+                    <strong>&rarr; Padrão Comportamental:</strong> {padrao_comportamental_valor}<br>
+                    <strong>&rarr; Explicação dos Motivos:</strong><br>
+                    {explicacao_motivos}<br><br>
+
+                    <strong>&rarr; Erros e Acertos que o atendente cometeu na ligação:</strong><br>
+                    {erros_acertos_atendente}<br><br>
+
+                    <strong>&rarr; Orientações práticas e contextualizadas para o Consultor (Closer):</strong><br>
+                    {orientacoes_praticas_closer}<br>
+                </p>
+
+                <hr>
+
+                <h3>INVESTIGAÇÃO: CLAREZA DA DOR E PROBLEMA</h3>
+
+                <p>
+                    <strong>1. &#x1F3AF; Nota:</strong> {nota_investigacao}<br>
+                    <strong>2. &#x23F1; Minutagem:</strong> {minutagem_investigacao}<br>
+                    <strong>3. &#x1F4AC; Trecho da fala revelando o problema:</strong><br>
+                    {trecho_problema}<br><br>
+
+                    <strong>4. &#x1F4AC; Qual a lista de problemas ou desafios identificados?</strong><br>
+                    {lista_de_problemas}<br><br>
+
+                    <strong>5. &#x1F4AC; Trecho da fala revelando os desdobramentos do problema:</strong><br>
+                    {trecho_desdobramento_problema}<br><br>
+
+                    <strong>6. &#x1F4AC; Aprofundamento dos problemas segundo a provocação do SDR:</strong><br>
+                    {aprofundamento_problemas_sdr}<br><br>
+
+                    <strong>7. &#x1F516; Feedback brutalmente direto sobre a qualidade analisada:</strong><br>
+                    {feedback_direto_investigacao}<br><br>
+
+                    <strong>8. &#x1F6E0; Sugestão prática de melhoria (se nota &lt; 5):</strong><br>
+                    {sugestao_melhoria_investigacao}<br>
+                </p>
+
+                <hr>
+
+                <h3>DESCOBERTA DO SONHO (Gatilho do 'Gap')</h3>
+
+                <p>
+                    <strong>1. &#x1F3AF; Nota:</strong> {nota_descoberta}<br>
+                    <strong>2. &#x23F1; Minutagem:</strong> {minutagem_descoberta}<br>
+                    <strong>3. &#x1F4AC; Trecho da fala revelando o sonho:</strong><br>
+                    {trecho_sonho}<br><br>
+
+                    <strong>4. &#x1F4AC; Qual a lista dos sonhos ou conquistas identificados?</strong><br>
+                    {lista_dos_sonhos}<br><br>
+
+                    <strong>5. &#x1F4AC; Trecho da fala revelando os desdobramentos do sonho:</strong><br>
+                    {trecho_desdobramento_sonho}<br><br>
+
+                    <strong>6. &#x1F4AC; Aprofundamento das conquistas (6 a 12 meses):</strong><br>
+                    {aprofundamento_conquistas}<br><br>
+
+                    <strong>7. &#x1F516; Feedback brutalmente direto sobre a qualidade:</strong><br>
+                    {feedback_direto_descoberta}<br><br>
+
+                    <strong>8. &#x1F6E0; Sugestão prática de melhoria (se nota &lt; 5):</strong><br>
+                    {sugestao_melhoria_descoberta}<br>
+                </p>
+
+                <hr>
+
+                <h3>DESPERTE O INTERESSE (Atendendo a Dor Real)</h3>
+
+                <p>
+                    <strong>1. &#x1F3AF; Nota:</strong> {nota_interesse}<br>
+                    <strong>2. &#x23F1; Minutagem:</strong> {minutagem_interesse}<br>
+                    <strong>3. Trecho da fala que cita o problema real do lead:</strong><br>
+                    {trecho_problema_citado_sdr}<br><br>
+
+                    <strong>4. &#x1F4AC; Trecho da fala revelando a explicação do SDR sobre um entregável:</strong><br>
+                    {trecho_explicacao_entregavel}<br><br>
+
+                    <strong>5. &#x1F4AC; Trecho da fala revelando os desdobramentos do entregável/estratégia:</strong><br>
+                    {trecho_desdobramento_entregavel}<br><br>
+
+                    <strong>6. &#x1F516; Feedback brutalmente direto sobre a qualidade analisada:</strong><br>
+                    {feedback_direto_interesse}<br><br>
+
+                    <strong>7. &#x1F6E0; Sugestão prática de melhoria (se nota &lt; 5):</strong><br>
+                    {sugestao_melhoria_interesse}<br>
+                </p>
+
+                <hr>
+
+                <h3>PROMOVEU A ESCASSEZ NA AGENDA DO ESPECIALISTA</h3>
+
+                <p>
+                    <strong>1. &#x1F3AF; Nota:</strong> {nota_escassez}<br>
+                    <strong>2. &#x23F1; Minutagem:</strong> {minutagem_escassez}<br>
+                    <strong>3. &#x1F4AC; Trecho da fala do SDR oferecendo a reunião com escassez:</strong><br>
+                    {trecho_oferta_escassez}<br><br>
+
+                    <strong>4. &#x1F516; Feedback brutalmente direto sobre a qualidade analisada:</strong><br>
+                    {feedback_direto_escassez}<br><br>
+
+                    <strong>5. &#x1F6E0; Sugestão prática de melhoria (se nota &lt; 5):</strong><br>
+                    {sugestao_melhoria_escassez}<br>
+                </p>
+
+                <hr>
+
+                <h3>TRANSCRIÇÃO COMPLETA DA LIGAÇÃO</h3>
+
+                <p>
+                    &#x1F525;&#x1F9CA;&#x1F525;&#x1F9CA;&#x1F525;&#x1F9CA;&#x1F525;&#x1F9CA;<br>
+                    {transcricao_parte_1}<br>
+                    {transcricao_parte_2}<br>
+                    {transcricao_parte_3}<br>
+                    {transcricao_parte_4}<br>
+                    {transcricao_parte_5}<br>
+                    {transcricao_parte_6}<br>
+                    {transcricao_parte_7}<br>
+                    {transcricao_parte_8}<br>
+                    {transcricao_parte_9}<br>
+                    {transcricao_parte_10}<br>
+                    {transcricao_parte_11}<br>
+                    {transcricao_parte_12}<br>
+                    {transcricao_parte_13}<br>
+                    {transcricao_parte_14}<br>
+                    {transcricao_parte_15}<br>
+                </p>
+                """
+        }
+
+        api_pipedrive.post_notes(payload_pipe)
+        
     except OutputParserException as e:
         print(f"❌ Erro de Transcrição/LangChain: {e}")
     except Exception as e:

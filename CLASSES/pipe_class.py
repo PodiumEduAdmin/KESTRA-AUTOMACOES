@@ -268,3 +268,26 @@ class PipedriveAPI:
             method="GET"
         )
         return response_get
+    
+    def post_notes(self, payload):
+        """
+        Cria uma nova nota no Pipedrive vinculada a um deal, pessoa ou organização.
+
+        Args:
+            payload (dict): O corpo da requisição, ex: {"content": "...", "deal_id": 123}.
+
+        Returns:
+            O objeto Response da requisição.
+        """
+        endpoint = "v1/notes"
+
+        response_post = self._request_api(
+            endpoint=endpoint,
+            method="POST",
+            # 🎯 CORREÇÃO AQUI: Passar o payload no argumento 'data' 🎯
+            data=payload 
+        )
+        
+        # ⚠️ Sugestão: Adicionar um print para confirmar ⚠️
+        print(f"Nota criada com sucesso.")
+        return response_post
