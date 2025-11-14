@@ -1175,7 +1175,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"1. 🎯 Nota: {nota_investigacao}\n2. 🕒 Minutagem: {minutagem_investigacao}\n3. 💬 Trecho da fala revelando o problema: \n{trecho_problema}\n4. 💬 Qual a lista de problemas ou desafios identificados?\n{lista_de_problemas}"
+                                    "content": f"1. 🎯 Nota: {nota_investigacao}\n\n2. 🕒 Minutagem: {minutagem_investigacao}\n\n3. 💬 Trecho da fala revelando o problema: \n\n{trecho_problema}\n4\n. 💬 Qual a lista de problemas ou desafios identificados?\n\n{lista_de_problemas}"
                                 }
                             }
                         ]
@@ -1189,7 +1189,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"5. 💬 Trecho da fala revelando os desdobramento do problema identificado:\n{trecho_desdobramento_problema}\n6. 💬 Qual o aprofundamento dos problemas segundo a provocação do SDR:\n{aprofundamento_problemas_sdr}\n7. 📌 Feedback brutalmente direto sobre a qualidade analisada:\n{feedback_direto_investigacao}\n8. 🛠 Sugestão prática de melhoria (se nota < 5):\n{sugestao_melhoria_investigacao}"
+                                    "content": f"5. 💬 Trecho da fala revelando os desdobramento do problema identificado:\n\n{trecho_desdobramento_problema}\n6. 💬 Qual o aprofundamento dos problemas segundo a provocação do SDR:\n\n{aprofundamento_problemas_sdr}\n\n7. 📌 Feedback brutalmente direto sobre a qualidade analisada:\n\n{feedback_direto_investigacao}\n\n8. 🛠 Sugestão prática de melhoria (se nota < 5):\n\n{sugestao_melhoria_investigacao}"
                                 }
                             }
                         ]
@@ -1218,7 +1218,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"1. 🎯 Nota: {nota_descoberta}\n2. 🕒 Minutagem: {minutagem_descoberta}\n2. 💬 Trecho da fala revelando o sonho:\n{trecho_sonho}\n3. 💬 Qual a lista dos sonhos ou conquistas identificados?\n{lista_dos_sonhos}"
+                                    "content": f"1. 🎯 Nota: {nota_descoberta}\n\n2. 🕒 Minutagem: {minutagem_descoberta}\n\n2. 💬 Trecho da fala revelando o sonho:\n\n{trecho_sonho}\n\n3. 💬 Qual a lista dos sonhos ou conquistas identificados?\n\n{lista_dos_sonhos}"
                                 }
                             }
                         ]
@@ -1232,7 +1232,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"4. 💬 Trecho da fala revelando os desdobramento do sonho identificados:\n{trecho_desdobramento_sonho}\n5. 💬 Qual o aprofundamento dos das conquistas que o lead terá resolvendo seus problemas e desafios citados dentro dos próximos 6 a 12 meses:\n{aprofundamento_conquistas}\n6. 📌 Feedback brutalmente direto sobre a qualidade\n{feedback_direto_descoberta}\n7. 🛠 Sugestão prática de melhoria (se nota < 5):\n{sugestao_melhoria_descoberta}"
+                                    "content": f"4. 💬 Trecho da fala revelando os desdobramento do sonho identificados:\n\n{trecho_desdobramento_sonho}\n\n5. 💬 Qual o aprofundamento dos das conquistas que o lead terá resolvendo seus problemas e desafios citados dentro dos próximos 6 a 12 meses:\n\n{aprofundamento_conquistas}\n\n6. 📌 Feedback brutalmente direto sobre a qualidade\n\n{feedback_direto_descoberta}\n\n7. 🛠 Sugestão prática de melhoria (se nota < 5):\n\n{sugestao_melhoria_descoberta}"
                                 }
                             }
                         ]
@@ -1260,7 +1260,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"1. 🎯 Nota: {nota_interesse}\n2. 🕒 Minutagem: {minutagem_interesse}\n3. Trecho da fala que sita o problema real do lead indagado pelo SDR:\n{trecho_problema_citado_sdr}\n4. 💬 Trecho da fala revelando a explicação do SDR sobre um entregável do produto ou estratégico:\n{trecho_explicacao_entregavel}"
+                                    "content": f"1. 🎯 Nota: {nota_interesse}\n\n2. 🕒 Minutagem: {minutagem_interesse}\n\n3. Trecho da fala que sita o problema real do lead indagado pelo SDR:\n\n{trecho_problema_citado_sdr}\n\n4. 💬 Trecho da fala revelando a explicação do SDR sobre um entregável do produto ou estratégico:\n\n{trecho_explicacao_entregavel}"
                                 }
                             }
                         ]
@@ -1274,7 +1274,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"5. 💬 Trecho da fala revelando os desdobramento do entregável ou estrategia: {trecho_desdobramento_entregavel}\n6. 📌 Feedback brutalmente direto sobre a qualidade analisada: {feedback_direto_interesse}\n7. 🛠 Sugestão prática de melhoria (se nota < 5): {sugestao_melhoria_interesse}"
+                                    "content": f"5. 💬 Trecho da fala revelando os desdobramento do entregável ou estrategia: {trecho_desdobramento_entregavel}\n\n6. 📌 Feedback brutalmente direto sobre a qualidade analisada: {feedback_direto_interesse}\n\n7. 🛠 Sugestão prática de melhoria (se nota < 5): {sugestao_melhoria_interesse}"
                                 }
                             }
                         ]
@@ -1302,7 +1302,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"1. 🎯 Nota: {nota_escassez}\n2. 🕒 Minutagem: {minutagem_escassez}\n3. 💬 Trecho da fala do SDR oferecendo a reunião com escassez e direto na dor do cliente:\n{trecho_oferta_escassez}"
+                                    "content": f"1. 🎯 Nota: {nota_escassez}\n\n2. 🕒 Minutagem: {minutagem_escassez}\n\n3. 💬 Trecho da fala do SDR oferecendo a reunião com escassez e direto na dor do cliente:\n\n{trecho_oferta_escassez}"
                                 }
                             }
                         ]
@@ -1317,7 +1317,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"4. 📌 Feedback brutalmente direto sobre a qualidade analisada: {feedback_direto_escassez}\n5. 🛠 Sugestão prática de melhoria (se nota < 5) {sugestao_melhoria_escassez}"
+                                    "content": f"4. 📌 Feedback brutalmente direto sobre a qualidade analisada: {feedback_direto_escassez}\n\n5. 🛠 Sugestão prática de melhoria (se nota < 5) {sugestao_melhoria_escassez}"
                                 }
                             }
                         ]
