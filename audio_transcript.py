@@ -101,7 +101,7 @@ if r.status_code == 200:
         content=[
             {
                 "type": "text", 
-                "text": "Transcreva o áudio de maneira completa e fiel, informando os minuto expecífico do diálogo e também identificando os locutores com 🟢SDR e 🟣CLIENTE."
+                "text": "Transcreva o áudio de maneira completa e fiel, informando os minuto expecífico do diálogo e também identificando os locutores com 🟢SDR e 🟣CLIENTE, adicione quebra de linha entre as conversas dos locutores para manter organizado."
             },
             {
                 "type": "media",
