@@ -160,10 +160,10 @@ if r.status_code == 200:
 
         Para cada um dos critérios abaixo, responda com:
         1.	🎯 Nota (de 1 a 5);
-    2. Minutagem;
-        3.	💬 Trecho da fala revelando o problema (literal com no mínimo 30 palavras) - identificando o LEAD e o SDR + a Minutagem da fala.
+        2. Minutagem;
+        3.	💬 Trecho da fala revelando o problema (LITERAL COM NO MÁXIMO 30 PALAVRAS) - SEMPRE identificar o LEAD e o SDR incluindo a Minutagem da fala.
         4.  Qual a lista de problemas ou desafios identificados?
-        5.	💬 Trecho da fala revelando os desdobramento do problema identificado (literal com no mínimo 30 palavras) - identificando o LEAD e o SDR + a Minutagem da fala. ( caso não tenha uma pergunta de desdobramento sobre algum dos problemas identificados, fale que não houve desdobramento do especificamente do problema.
+        5.	💬 Trecho da fala revelando os desdobramento do problema identificado (LITERAL COM NO MÁXIMO 30 PALAVRAS) - SEMPRE identificar o LEAD e o SDR incluindo a Minutagem da fala. ( caso não tenha uma pergunta de desdobramento sobre algum dos problemas identificados, fale que não houve desdobramento do especificamente do problema.
         6.  Qual o aprofundamento dos problemas segundo a provocação do SDR
         7.	📌 Feedback brutalmente direto sobre a qualidade analisada
         8.	🛠 Sugestão prática de melhoria (se nota < 5)
@@ -194,9 +194,9 @@ if r.status_code == 200:
         Para cada um dos critérios abaixo, responda com: 
         1.	🎯 Nota (de 1 a 5);
         2. Minutagem;
-        3.	💬 Trecho da fala revelando o sonho (literal com no mínimo 30 palavras) - identificando o LEAD e o SDR + a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
+        3.	💬 Trecho da fala revelando o sonho (LITERAL COM NO MÁXIMO 30 PALAVRAS) - SEMPRE identificar o LEAD e o SDR incluindo a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
         4.  Qual a lista dos sonhos ou conquistas identificados? (se não tiver investigado isso, mencionar que não perguntou na ligação)
-        5.	💬 Trecho da fala revelando os desdobramento do sonho identificados (literal com no mínimo 30 palavras) - identificando o LEAD e o SDR + a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
+        5.	💬 Trecho da fala revelando os desdobramento do sonho identificados (LITERAL COM NO MÁXIMO 30 PALAVRAS) - SEMPRE identificar o LEAD e o SDR incluindo a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
         6.  Qual o aprofundamento dos das conquistas que o lead terá resolvendo seus problemas e desafios citados dentro dos próximos 6 a 12 meses (se não tiver investigado isso, mencionar que não perguntou na ligação)
         7.	📌 Feedback brutalmente direto sobre a qualidade analisada
         8.	🛠 Sugestão prática de melhoria (se nota < 5)
@@ -229,9 +229,9 @@ if r.status_code == 200:
         Para cada um dos critérios abaixo, responda com: 
         1.	🎯 Nota (de 1 a 5);
         2. Minutagem;
-        3. Trecho da fala que sita o problema real do lead indagado pelo SDR (literal com no mínimo 30 palavras) - identificando o LEAD e o SDR + a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
-        4.	💬 Trecho da fala revelando a explicação do SDR sobre um entregável do produto ou estratégico  (literal com no mínimo 30 palavras) - identificando o LEAD e o SDR + a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
-        5.	💬 Trecho da fala revelando os desdobramento do entregável ou estrategia (literal com no mínimo 30 palavras) - identificando o LEAD e o SDR + a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
+        3. Trecho da fala que sita o problema real do lead indagado pelo SDR (LITERAL COM NO MÁXIMO 30 PALAVRAS) - SEMPRE identificar o LEAD e o SDR incluindo a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
+        4.	💬 Trecho da fala revelando a explicação do SDR sobre um entregável do produto ou estratégico (LITERAL COM NO MÁXIMO 30 PALAVRAS) - SEMPRE identificar o LEAD e o SDR incluindo a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
+        5.	💬 Trecho da fala revelando os desdobramento do entregável ou estrategia (LITERAL COM NO MÁXIMO 30 PALAVRAS) - SEMPRE identificar o LEAD e o SDR incluindo a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
         6.	📌 Feedback brutalmente direto sobre a qualidade analisada
         7.	🛠 Sugestão prática de melhoria (se nota < 5)
 
@@ -257,7 +257,7 @@ if r.status_code == 200:
         Para cada um dos critérios abaixo, responda com: 
         1.	🎯 Nota (de 1 a 5) ;
         2. Minutagem;
-        3.	💬 Trecho da fala do SDR oferecendo a reunião com escassez e direto na dor do cliente (literal com no mínimo 30 palavras) - identificando o LEAD e o SDR + a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
+        3.	💬 Trecho da fala do SDR oferecendo a reunião com escassez e direto na dor do cliente (LITERAL COM NO MÁXIMO 30 PALAVRAS) - SEMPRE identificar o LEAD e o SDR incluindo a Minutagem da fala. (se não tiver investigado isso, mencionar que não perguntou na ligação)
         4.	📌 Feedback brutalmente direto sobre a qualidade analisada
         5.	🛠 Sugestão prática de melhoria (se nota < 5)
 
@@ -484,7 +484,7 @@ if r.status_code == 200:
             # TRANSCRIÇÃO COMPLETA PARA ANÁLISE:
             {full_transcript}
             
-            Por favor, realize as análises solicitadas e devolva as informações EXATAMENTE no formato JSON Schema fornecido. **OBS IMPORTANTE: essas informações serão inseridas no Notion, preciso que o conteúdo dos blocos não exceda 2000 letras***.
+            Por favor, realize as análises solicitadas e devolva as informações EXATAMENTE no formato JSON Schema fornecido. **OBS IMPORTANTE: essas informações serão inseridas no Notion, preciso que o conteúdo dos blocos não exceda 2000 letras, e inclua qubras de linhas entre os diálogos para melhorar a leitura***.
             """)
             ]
         # response_analise = llm.invoke(messages)
@@ -891,7 +891,7 @@ if r.status_code == 200:
 
         result = agent.invoke({
                     "messages": [
-                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}, Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema"}
+                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}, Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema, não use Notas quebradas com ','. Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura."}
                     ]
                 })
         
