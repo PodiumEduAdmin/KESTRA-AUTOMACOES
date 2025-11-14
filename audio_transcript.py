@@ -28,7 +28,7 @@ api_pipedrive = PipedriveAPI(apikey_pipe)
 
 # Inicialização do Modelo
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
+    model="gemini-2.5-pro",
     temperature=0,
     max_tokens=None, # Deixa o LLM decidir o melhor
     timeout=None,    # Deixa o LLM decidir o melhor
