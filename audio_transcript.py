@@ -862,9 +862,13 @@ if r.status_code == 200:
                         "type": "number",
                         "description": "Número de assinantes do cliente no momento do depoimento, se disponível."
                     },
-                    "TEXTO": {
+                    "DESCRIÇÃO": {
                         "type": "string",
-                        "description": "O conteúdo do depoimento do cliente (formato string)."
+                        "description": "Uma breve descrição do motivo da escolha do vídeo."
+                    },
+                    "SUGESTÃO": {
+                        "type": "string",
+                        "description": "Uma sugestão de como o clouser deve apresentar o depoimento para o lead."
                     },
                     "LINK": {
                         "type": "string",
@@ -877,7 +881,9 @@ if r.status_code == 200:
                 "CIDADE",
                 "FATURAMENTO_INICIAL",
                 "FATURAMENTO_ATUAL",
-                "ASSINANTES,"
+                "ASSINANTES",
+                "DESCRIÇÃO",
+                "SUGESTÃO",
                 "TEXTO",
                 "LINK"
             ]
@@ -979,7 +985,7 @@ if r.status_code == 200:
 
         result = agent.invoke({
                     "messages": [
-                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}. Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema, AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5. Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura. Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia exemplos (no máximo 3) que melhor se pareçam com o perfil do lead da transcrição (use o campo TEXTO para comparar), dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início, isso será usado pelo clouser no processo de venda."} 
+                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}. Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema, AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5. Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura. Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia exemplos (no máximo 3) que melhor se pareçam com o perfil do lead da transcrição (use o campo TEXTO para comparar), dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início e adicione uma breve descrição do motivo da escolha do vídeo o porquê aquele vídeo se encaixa no contexto do lead, também gere uma sujestão de como o clouser deve apresentar o deppoimento para o lead, isso será usado pelo clouser no processo de venda."} 
                     ]
                 })
         
@@ -1035,7 +1041,8 @@ if r.status_code == 200:
                 "FATURAMENTO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["FATURAMENTO_INICIAL"],
                 "FATURAMENTO_ATUAL": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["FATURAMENTO_ATUAL"],
                 "ASSINANTES": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["ASSINANTES"],
-                "TEXTO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["TEXTO"],
+                "DESCRIÇÃO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["DESCRIÇÃO"],
+                "SUGESTÃO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["DESCRIÇÃO"],
                 "LINK": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["LINK"]
             }
 
@@ -1223,7 +1230,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"NOME:{cliente_0.get('NOME')}\nCIDADE:{cliente_0.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_0.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_0.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_0.get('ASSINANTES')}\nTEXTO:{cliente_0.get('TEXTO')}\n"
+                                    "content": f"NOME:{cliente_0.get('NOME')}\nCIDADE:{cliente_0.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_0.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_0.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_0.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_0.get('DESCRIÇÃO')}\SUGESTÃO:{cliente_0.get('SUGESTÃO')}\n"
                                 }
                             },
                             {
@@ -1246,7 +1253,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"NOME:{cliente_1.get('NOME')}\nCIDADE:{cliente_1.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_1.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_1.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_1.get('ASSINANTES')}\nTEXTO:{cliente_1.get('TEXTO')}\n"
+                                    "content": f"NOME:{cliente_1.get('NOME')}\nCIDADE:{cliente_1.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_1.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_1.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_1.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_1.get('DESCRIÇÃO')}\SUGESTÃO:{cliente_1.get('SUGESTÃO')}\n"
                                 }
                             },
                                                         {
@@ -1269,7 +1276,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"NOME:{cliente_2.get('NOME')}\nCIDADE:{cliente_2.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_2.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_2.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_2.get('ASSINANTES')}\nTEXTO:{cliente_2.get('TEXTO')}\n"
+                                    "content": f"NOME:{cliente_2.get('NOME')}\nCIDADE:{cliente_2.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_2.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_2.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_2.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_2.get('DESCRIÇÃO')}\SUGESTÃO:{cliente_2.get('SUGESTÃO')}\n"
                                 }
                             },
                             {
