@@ -113,9 +113,9 @@ def get_depoiments():
             {
             "NOME": page['properties'].get('Nome').get('title')[0].get('plain_text') if page['properties'].get('Nome').get('title')[0] else None,
             "CIDADE": page['properties'].get('Cidade').get('place').get('name') if page['properties'].get('Cidade').get('place') else None,
-            "FATURAMENTO_INICIAL":page['properties'].get('Fat. Inicial').get('number') if page['properties'].get('Fat. Atual') else None,
-            "FATURAMENTO_ATUAL":(page['properties'].get('Fat. Atual').get('number')) if (page['properties'].get('Fat. Atual').get('number')) else "",
-            "ASSINANTES":(page['properties'].get('Assinantes').get('number')) if (page['properties'].get('Fat. Atual').get('number')) else "",
+            "FATURAMENTO_INICIAL":page['properties'].get('Fat. Inicial').get('number') if page['properties'].get('Fat. Inicial') else None,
+            "FATURAMENTO_ATUAL":(page['properties'].get('Fat. Atual').get('number')) if (page['properties'].get('Fat. Atual')) else "",
+            "ASSINANTES":(page['properties'].get('Assinantes').get('number')) if (page['properties'].get('Assinantes')) else "",
             "TEXTO":str([item.get('text').get('content') for item in page['properties'].get('Texto').get('rich_text')]) if str([item.get('text').get('content') for item in page['properties'].get('Texto').get('rich_text')]) else "",
             "Link":(page['properties'].get('Link').get('url')) if (page['properties'].get('Link').get('url')) else ""
         })
