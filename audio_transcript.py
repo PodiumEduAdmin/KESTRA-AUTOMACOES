@@ -1230,7 +1230,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"NOME:{cliente_0.get('NOME')}\nCIDADE:{cliente_0.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_0.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_0.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_0.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_0.get('DESCRIÇÃO')}\SUGESTÃO:{cliente_0.get('SUGESTÃO')}\n"
+                                    "content": f"NOME:{cliente_0.get('NOME')}\nCIDADE:{cliente_0.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_0.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_0.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_0.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_0.get('DESCRIÇÃO')}\nSUGESTÃO:{cliente_0.get('SUGESTÃO')}\n"
                                 }
                             },
                             {
@@ -1253,7 +1253,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"NOME:{cliente_1.get('NOME')}\nCIDADE:{cliente_1.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_1.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_1.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_1.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_1.get('DESCRIÇÃO')}\SUGESTÃO:{cliente_1.get('SUGESTÃO')}\n"
+                                    "content": f"NOME:{cliente_1.get('NOME')}\nCIDADE:{cliente_1.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_1.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_1.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_1.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_1.get('DESCRIÇÃO')}\nSUGESTÃO:{cliente_1.get('SUGESTÃO')}\n"
                                 }
                             },
                                                         {
@@ -1276,7 +1276,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"NOME:{cliente_2.get('NOME')}\nCIDADE:{cliente_2.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_2.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_2.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_2.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_2.get('DESCRIÇÃO')}\SUGESTÃO:{cliente_2.get('SUGESTÃO')}\n"
+                                    "content": f"NOME:{cliente_2.get('NOME')}\nCIDADE:{cliente_2.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_2.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_2.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_2.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_2.get('DESCRIÇÃO')}\nSUGESTÃO:{cliente_2.get('SUGESTÃO')}\n"
                                 }
                             },
                             {
