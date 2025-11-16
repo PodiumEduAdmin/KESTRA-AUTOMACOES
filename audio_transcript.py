@@ -16,12 +16,12 @@ import datetime as dt
 import json
 
 # --- Configurações Iniciais ---
-# dotenv.load_dotenv("./.env")
-# api_key = os.getenv('GOOGLE_API')
-# apikey_pipe = os.getenv("API_KEY")
-# notion_token = os.getenv("NOTION_TOKEN")
-apikey_pipe = os.environ["apikey_pipe"]
-notion_token = os.environ['NOTION_TOKEN']
+dotenv.load_dotenv("./.env")
+api_key = os.getenv('GOOGLE_API')
+apikey_pipe = os.getenv("API_KEY")
+notion_token = os.getenv("NOTION_TOKEN")
+# apikey_pipe = os.environ["apikey_pipe"]
+# notion_token = os.environ['NOTION_TOKEN']
 api_notion = NotiondriveAPI(notion_token)
 api_pipedrive = PipedriveAPI(apikey_pipe)
 # os.environ["GOOGLE_API_KEY"] = api_key
@@ -43,38 +43,50 @@ llm_basic = ChatGoogleGenerativeAI(
     timeout=None,    # Deixa o LLM decidir o melhor
     max_retries=2,
 )
-# url = "https://podium.3c.plus/api/v1/calls/69176b63faa55307c6629ebd/recording"
+url = "https://podium.3c.plus/api/v1/calls/69176b63faa55307c6629ebd/recording"
 
-url = os.environ['URL']
+# url = os.environ['URL']
 
 # --- Funções Auxiliares para Chunking ---
 
-def split_text_into_chunks(text, max_chars=1950):
+def split_text_into_chunks(text, max_chars=1950, max_chunks=20): # Ajustado para 20 partes
     """Divide um texto longo em chunks com limite de caracteres."""
     if not text:
-        return []
-    
+        return [""] * max_chunks # Retorna 20 strings vazias se não houver texto
+
     # Tenta quebrar por frases ou linhas para manter coerência
     sentences = re.split(r'([.!?])\s+', text)
     chunks = []
     current_chunk = ""
-    
-    for sentence in sentences:
-        if len(current_chunk) + len(sentence) < max_chars:
+
+    for i, sentence in enumerate(sentences):
+        # Para sentenças mais longas que o limite, adicione a quebra
+        if len(sentence) > max_chars:
+            # Caso raro: uma única 'sentença' é maior que 1950.
+            # Se for esse caso, uma quebra forçada (não ideal) é necessária
+            if current_chunk:
+                chunks.append(current_chunk.strip())
+            
+            # Divide a sentença grande em sub-chunks forçados (a cada max_chars)
+            for j in range(0, len(sentence), max_chars):
+                sub_chunk = sentence[j:j+max_chars]
+                chunks.append(sub_chunk.strip())
+            current_chunk = ""
+        elif len(current_chunk) + len(sentence) < max_chars:
             current_chunk += sentence
         else:
             if current_chunk:
                 chunks.append(current_chunk.strip())
             current_chunk = sentence
-    
+            
     if current_chunk:
         chunks.append(current_chunk.strip())
         
-    # Garante que sempre terá 10 partes, mesmo que vazias, para o schema Notion
-    while len(chunks) < 10:
+    # Garante o número exato de partes para o Schema (20 no seu caso)
+    while len(chunks) < max_chunks:
         chunks.append("")
         
-    return chunks[:10] # Retorna no máximo 10 partes
+    return chunks[:max_chunks] # Retorna no máximo 20 partes
 
 def get_safe_str(data_dict, key, default="N/A"):
     """Extrai um valor do dicionário, tratando listas e sets como strings seguras."""
@@ -157,7 +169,7 @@ if r.status_code == 200:
         print("✅ 1/3: Transcrição concluída. Quebrando em chunks para análise...")
 
         # Quebra a transcrição completa em chunks de 2000 caracteres
-        chunks = split_text_into_chunks(full_transcript, max_chars=2000)
+        chunks = split_text_into_chunks(full_transcript, max_chars=1950, max_chunks=20)
         
         # 2. SUMARIZAÇÃO EM CHUNKS (Redução do Contexto)
         summarized_chunks = []
@@ -1009,40 +1021,65 @@ if r.status_code == 200:
         depoimentos=get_depoiments()
 
         result = agent.invoke({
-                    "messages": [
-                        {"role": "user", "content": f"""Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}.
-                         
-                         ***NÃO ESQUEÇA DE QUEBRAR A TRANSCRIÇÃO EM 20 PARTES OS BLOCOS DE TEXTO NÃO PODEM PASSAR DE 2000 LETRAS conforme especificado no schema***. 
-                         AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5. 
+                "messages": [
+                    {"role": "user", "content": f"""
+                    Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido.
+                    
+                    # TRANSCRIÇÃO COMPLETA DIVIDIDA EM PARTES (NÃO ALTERE O CONTEÚDO AO COPIAR PARA O JSON)
+                    TRANSCRIÇÃO_PARTE_01: {chunks[0]}
+                    TRANSCRIÇÃO_PARTE_02: {chunks[1]}
+                    TRANSCRIÇÃO_PARTE_03: {chunks[2]}
+                    TRANSCRIÇÃO_PARTE_04: {chunks[3]}
+                    TRANSCRIÇÃO_PARTE_05: {chunks[4]}
+                    TRANSCRIÇÃO_PARTE_06: {chunks[5]}
+                    TRANSCRIÇÃO_PARTE_07: {chunks[6]}
+                    TRANSCRIÇÃO_PARTE_08: {chunks[7]}
+                    TRANSCRIÇÃO_PARTE_09: {chunks[8]}
+                    TRANSCRIÇÃO_PARTE_10: {chunks[9]}
+                    TRANSCRIÇÃO_PARTE_11: {chunks[10]}
+                    TRANSCRIÇÃO_PARTE_12: {chunks[11]}
+                    TRANSCRIÇÃO_PARTE_13: {chunks[12]}
+                    TRANSCRIÇÃO_PARTE_14: {chunks[13]}
+                    TRANSCRIÇÃO_PARTE_15: {chunks[14]}
+                    TRANSCRIÇÃO_PARTE_16: {chunks[15]}
+                    TRANSCRIÇÃO_PARTE_17: {chunks[16]}
+                    TRANSCRIÇÃO_PARTE_18: {chunks[17]}
+                    TRANSCRIÇÃO_PARTE_19: {chunks[18]}
+                    TRANSCRIÇÃO_PARTE_20: {chunks[19]}
 
-                         Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura. 
-                         
-                         Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia exemplos (no máximo 3) que melhor se pareçam com o perfil do lead da transcrição (use o campo TEXTO para comparar). 
-                         Dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início e adicione uma breve descrição do motivo da escolha do vídeo o porquê aquele vídeo se encaixa no contexto do lead, também gere uma sujestão (NÃO PRECISA CITAR NOMES) de como a pessoa que tentará a venda deve apresentar o deppoimento para o lead, isso será usado pelo clouser no processo de venda."""}
-                    ]
-                })
+                    ***INSTRUÇÃO: Use o conteúdo EXATO das partes TRANSCRIÇÃO_PARTE_01 a TRANSCRIÇÃO_PARTE_20 para preencher os campos TRANSCRIÇÃO_COMPLETA_PARTE_1 a TRANSCRIÇÃO_COMPLETA_PARTE_20 do JSON de saída. 
+                    Mantenha o conteúdo EXATO, incluindo minutagem e identificadores de locutores (🟢SDR e 🟣CLIENTE).
+                    Obrigatório: Insira uma quebra de linha (pular uma linha) sempre que o locutor mudar ou houver uma pausa significativa.
+                    A transcrição deve ser fácil de ler, com os diálogos bem separados. Não adicione nenhum comentário ou texto extra.***
+                    
+                    AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5.
+                    Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura.
+                    Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia exemplos (no máximo 3) que melhor se pareçam com o perfil do lead da transcrição (use o campo TEXTO para comparar).
+                    Dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início e adicione uma breve descrição do motivo da escolha do vídeo o porquê aquele vídeo se encaixa no contexto do lead, também gere uma sujestão (NÃO PRECISA CITAR NOMES) de como a pessoa que tentará a venda deve apresentar o deppoimento para o lead, isso será usado pelo clouser no processo de venda."""}
+                ]
+            })
         
         # Kestra.outputs({"response": result["structured_response"]})
 
         # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS PARA TESTES---
-        # cliente = "VICTOR TESTE"
-        # SDR="VICTOR TESTE"
-        # Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
-        # id_pipedrive=60459
-        # Link_da_Ligação= url
-        # Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
-        # Faturamento="até R$15.000"
-        # Campanha="TESTE"
-
-        # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
-        cliente = os.environ['cliente'] 
-        SDR=os.environ['SDR']
+        cliente = "VICTOR TESTE"
+        SDR="VICTOR TESTE"
         Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
-        id_pipedrive=os.environ['id_pipedrive']
+        id_pipedrive=60459
         Link_da_Ligação= url
         Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
-        Faturamento=os.environ['Faturamento']
-        Campanha=os.environ['Campanha']
+        Faturamento="até R$15.000"
+        Campanha="TESTE"
+
+        # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
+        # cliente = os.environ['cliente'] 
+        # SDR=os.environ['SDR']
+        # Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
+        # id_pipedrive=os.environ['id_pipedrive']
+        # Link_da_Ligação= url
+        # Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
+        # Faturamento=os.environ['Faturamento']
+        # Campanha=os.environ['Campanha']
 
         # CORREÇÃO 1: Tratar temperatura e perfil comportamental como string de forma segura
         Tempertura_IA = str(result["structured_response"]["7. TEMPERATURA"]["temperatura_do_lead"]).replace("%", "").strip() 
