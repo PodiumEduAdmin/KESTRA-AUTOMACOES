@@ -159,3 +159,26 @@ class NotiondriveAPI:
             method="PATCH", 
             data=children_payload
         )
+    
+    def list_datasource(
+            self,
+            data_source_id
+            ):
+        
+        endpoint =f"v1/data_sources/{data_source_id.lstrip('/')}/templates"
+        return self._request_api(
+            endpoint=endpoint,
+            method="GET",
+        )
+    def query_datasource(
+            self,
+            data_source_id,
+            payload
+            ):
+        
+        endpoint =f"v1/data_sources/{data_source_id.lstrip('/')}/query"
+        return self._request_api(
+            endpoint=endpoint,
+            method="POST",
+            data=payload
+        )
