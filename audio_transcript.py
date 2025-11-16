@@ -836,41 +836,42 @@ if r.status_code == 200:
             ]
             },
             "8. DEPOIMENTO_CLIENTE": {
-            "type": "object",
-            "description": "Informações relevantes do Depoimento de Cliente encontrado.",
-            "properties": [
-                {
-                
-                "NOME": {
-                    "type": "string",
-                    "description": "Nome do cliente no depoimento."
+            "type": "array",
+            "description": "Lista de depoimentos de clientes relacionados ao lead ou à região.",
+            "items": {
+                "type": "object",
+                "properties": 
+                    {
+                    "NOME": {
+                        "type": "string",
+                        "description": "Nome do cliente no depoimento."
+                    },
+                    "CIDADE": {
+                        "type": "string",
+                        "description": "Cidade do cliente no depoimento."
+                    },
+                    "FATURAMENTO_INICIAL": {
+                        "type": "number",
+                        "description": "Faturamento inicial do cliente antes de entrar na Pódium, se disponível."
+                    },
+                    "FATURAMENTO_ATUAL": {
+                        "type": "number",
+                        "description": "Faturamento Atual do cliente no momento do depoimento, se disponível."
+                    },
+                    "ASSINANTES": {
+                        "type": "number",
+                        "description": "Número de assinantes do cliente no momento do depoimento, se disponível."
+                    },
+                    "TEXTO": {
+                        "type": "string",
+                        "description": "O conteúdo do depoimento do cliente (formato string)."
+                    },
+                    "LINK": {
+                        "type": "string",
+                        "description": "URL do link para o depoimento original."
+                    }
                 },
-                "CIDADE": {
-                    "type": "string",
-                    "description": "Cidade do cliente no depoimento."
-                },
-                "FATURAMENTO_INICIAL": {
-                    "type": "number",
-                    "description": "Faturamento inicial do cliente antes de entrar na Pódium, se disponível."
-                },
-                "FATURAMENTO_ATUAL": {
-                    "type": "number",
-                    "description": "Faturamento Atual do cliente no momento do depoimento, se disponível."
-                },
-                "ASSINANTES": {
-                    "type": "number",
-                    "description": "Número de assinantes do cliente no momento do depoimento, se disponível."
-                },
-                "TEXTO": {
-                    "type": "string",
-                    "description": "O conteúdo do depoimento do cliente (formato string)."
-                },
-                "LINK": {
-                    "type": "string",
-                    "description": "URL do link para o depoimento original."
-                }
-            }
-            ],
+            },
             "required": [
                 "NOME",
                 "CIDADE",
@@ -978,12 +979,22 @@ if r.status_code == 200:
 
         result = agent.invoke({
                     "messages": [
-                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}. Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema, AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5. Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura. Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia os exemplos que melhor se encaixam com perfil do lead da transcrição, dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início, isso será usado pelo clouser no processo de venda."} 
+                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}. Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema, AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5. Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura. Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia exemplos (no máximo 3) que melhor se pareçam com o perfil do lead da transcrição (use o campo TEXTO para comparar), dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início, isso será usado pelo clouser no processo de venda."} 
                     ]
                 })
         
         # Kestra.outputs({"response": result["structured_response"]})
-   
+
+        # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS PARA TESTES---
+        # cliente = "VICTOR TESTE"
+        # SDR="VICTOR TESTE"
+        # Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
+        # id_pipedrive=60459
+        # Link_da_Ligação= url
+        # Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
+        # Faturamento="até R$15.000"
+        # Campanha="TESTE"
+
         # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
         cliente = os.environ['cliente'] 
         SDR=os.environ['SDR']
@@ -1015,13 +1026,24 @@ if r.status_code == 200:
             return str(value)
 
         # --- VARIAVEIS DEPOIMENTOS ---
-        NOME = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]["NOME"]
-        CIDADE = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]["CIDADE"]
-        FATURAMENTO = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]["FATURAMENTO_INICIAL"]
-        FATURAMENTO_ATUAL = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]["FATURAMENTO_ATUAL"]
-        ASSINANTES = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]["ASSINANTES"]
-        TEXTO = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]["TEXTO"]
-        LINK = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]["LINK"]
+        DEPOIMENTOS_LIST = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]
+
+        def cria_blocos_depoimentos(cliente_n):
+            cliente = {
+                "NOME": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["NOME"],
+                "CIDADE": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["CIDADE"],
+                "FATURAMENTO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["FATURAMENTO_INICIAL"],
+                "FATURAMENTO_ATUAL": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["FATURAMENTO_ATUAL"],
+                "ASSINANTES": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["ASSINANTES"],
+                "TEXTO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["TEXTO"],
+                "LINK": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["LINK"]
+            }
+
+            return cliente
+        
+        cliente_0=cria_blocos_depoimentos(0)
+        cliente_1=cria_blocos_depoimentos(1)
+        cliente_2=cria_blocos_depoimentos(2)
 
         # --- VARIAVEIS DE NOTAS (DEIXE COMO FLOAT) ---
         nota_investigacao = float(result["structured_response"]["1. INVESTIGAÇÃO"]["nota"]) 
@@ -1142,7 +1164,7 @@ if r.status_code == 200:
                 },
                 "Faturamento": {
                     "select": {
-                        "name": Faturamento.strip()
+                        "name": Faturamento
                     }
                 },
                 "Campanha": {
@@ -1160,7 +1182,7 @@ if r.status_code == 200:
                 },
                 "Link PIPEDRIVE": {
                     # Certifique-se de que o id_pipedrive seja uma string válida
-                    "url": f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive.strip()}"
+                    "url": f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
                 },
                 
                 # 🛑 CORRIGIDO: Nomes de propriedades EXATOS (retirados do JSON de resposta)
@@ -1178,8 +1200,7 @@ if r.status_code == 200:
                     "number": nota_escassez 
                 }
             },
-                        "children": [
-                            
+                "children": [
                 {
                     "object": "block",
                     "type": "heading_2",
@@ -1188,7 +1209,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": "📋 ANÁLISE DE LEAD — PERFIL DO AVATAR"
+                                    "content": "🎥 DEPOIMENTOS DE CLIENTES"
                                 }
                             }
                         ]
@@ -1202,12 +1223,81 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"🎥 DEPOIMENTOS CLIENTES\n\nNOME:\n{NOME}\nCIDADE:{CIDADE}\nFATURAMENTO_INICIAL:{FATURAMENTO}\nFATURAMENTO_ATUAL:{FATURAMENTO_ATUAL}\nASSINANTES:{ASSINANTES}\nTEXTO:{TEXTO}\nLINK_VÍDEO:{LINK}"
+                                    "content": f"NOME:{cliente_0.get('NOME')}\nCIDADE:{cliente_0.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_0.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_0.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_0.get('ASSINANTES')}\nTEXTO:{cliente_0.get('TEXTO')}\n"
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"Link do Depoimento",
+                                    "link": {
+                                        "url": cliente_0.get('LINK')
+                                    }
+                                }
+                            }   
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"NOME:{cliente_1.get('NOME')}\nCIDADE:{cliente_1.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_1.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_1.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_1.get('ASSINANTES')}\nTEXTO:{cliente_1.get('TEXTO')}\n"
+                                }
+                            },
+                                                        {
+                                "type": "text",
+                                "text": {
+                                    "content": f"Link do Depoimento",
+                                    "link": {
+                                        "url": cliente_1.get('LINK')
+                                    }
+                                }
+                            }   
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"NOME:{cliente_2.get('NOME')}\nCIDADE:{cliente_2.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_2.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_2.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_2.get('ASSINANTES')}\nTEXTO:{cliente_2.get('TEXTO')}\n"
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"Link do Depoimento",
+                                    "link": {
+                                        "url": cliente_2.get('LINK')
+                                    }
+                                }
+                            }                            
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "heading_2",
+                    "heading_2": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": "📋 ANÁLISE DE LEAD — PERFIL DO AVATAR"
                                 }
                             }
                         ]
                     }
-                },
+                },            
                 {
                     "object": "block",
                     "type": "paragraph",
@@ -1672,15 +1762,37 @@ if r.status_code == 200:
             "deal_id": id_pipedrive,
             "content": f"""
                 <h3>DEPOIMENTOS DE CLIENTES SIMILARES</h3>
-
+                <h2>EXEMPLO 1</h2>
                 <p>
-                    <strong>NOME:</strong> {NOME}<br>
-                    <strong>CIDADE</strong> {CIDADE}<br>
-                    <strong>FATURAMENTO INICIAL:</strong> {FATURAMENTO}<br>
-                    <strong>FATURAMENTO ATUAL:</strong> {FATURAMENTO_ATUAL}<br>
-                    <strong>ASSINANTES</strong> {ASSINANTES}<br>
-                    <strong>TEXTO:</strong> {TEXTO}<br>
-                    <strong>LINK VÍDEO:</strong> {LINK}<br>
+                    <strong>NOME:</strong> {cliente_0.get('NOME')}<br>
+                    <strong>CIDADE:</strong> {cliente_0.get('CIDADE')}<br>
+                    <strong>FATURAMENTO_INICIAL:</strong> {cliente_0.get('FATURAMENTO_INICIAL')}<br>
+                    <strong>FATURAMENTO_ATUAL:</strong> {cliente_0.get('FATURAMENTO_ATUAL')}<br>
+                    <strong>ASSINANTES:</strong> {cliente_0.get('ASSINANTES')}<br>
+                    <strong>TEXTO:</strong> {cliente_0.get('TEXTO')}<br>
+                    <strong>LINK:</strong> {cliente_0.get('LINK')}<br>
+                </p>
+
+                <h2>EXEMPLO 2</h2>
+                <p>
+                    <strong>NOME:</strong> {cliente_1.get('NOME')}<br>
+                    <strong>CIDADE:</strong> {cliente_1.get('CIDADE')}<br>
+                    <strong>FATURAMENTO_INICIAL:</strong> {cliente_1.get('FATURAMENTO_INICIAL')}<br>
+                    <strong>FATURAMENTO_ATUAL:</strong> {cliente_1.get('FATURAMENTO_ATUAL')}<br>
+                    <strong>ASSINANTES:</strong> {cliente_1.get('ASSINANTES')}<br>
+                    <strong>TEXTO:</strong> {cliente_1.get('TEXTO')}<br>
+                    <strong>LINK:</strong> {cliente_1.get('LINK')}<br>
+                </p>
+
+                <h2>EXEMPLO 3</h2>
+                <p>
+                    <strong>NOME:</strong> {cliente_2.get('NOME')}<br>
+                    <strong>CIDADE:</strong> {cliente_2.get('CIDADE')}<br>
+                    <strong>FATURAMENTO_INICIAL:</strong> {cliente_2.get('FATURAMENTO_INICIAL')}<br>
+                    <strong>FATURAMENTO_ATUAL:</strong> {cliente_2.get('FATURAMENTO_ATUAL')}<br>
+                    <strong>ASSINANTES:</strong> {cliente_2.get('ASSINANTES')}<br>
+                    <strong>TEXTO:</strong> {cliente_2.get('TEXTO')}<br>
+                    <strong>LINK:</strong> {cliente_2.get('LINK')}<br>
                 </p>
 
                 <h3>&#x1F4CB; ANÁLISE DE LEAD &mdash; PERFIL DO AVATAR</h3>
