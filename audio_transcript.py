@@ -947,6 +947,26 @@ if r.status_code == 200:
             "TRANSCRIÇÃO_COMPLETA_PARTE_15": {
             "type": "string",
             "description": "Terceira parte da transcrição completa da conversa."
+            },
+            "TRANSCRIÇÃO_COMPLETA_PARTE_16": {
+            "type": "string",
+            "description": "Terceira parte da transcrição completa da conversa."
+            },
+            "TRANSCRIÇÃO_COMPLETA_PARTE_17": {
+            "type": "string",
+            "description": "Terceira parte da transcrição completa da conversa."
+            },
+            "TRANSCRIÇÃO_COMPLETA_PARTE_18": {
+            "type": "string",
+            "description": "Terceira parte da transcrição completa da conversa."
+            },
+            "TRANSCRIÇÃO_COMPLETA_PARTE_19": {
+            "type": "string",
+            "description": "Terceira parte da transcrição completa da conversa."
+            },
+            "TRANSCRIÇÃO_COMPLETA_PARTE_20": {
+            "type": "string",
+            "description": "Terceira parte da transcrição completa da conversa."
             }           
         },
         "required": [
@@ -972,7 +992,12 @@ if r.status_code == 200:
             "TRANSCRIÇÃO_COMPLETA_PARTE_12",
             "TRANSCRIÇÃO_COMPLETA_PARTE_13",
             "TRANSCRIÇÃO_COMPLETA_PARTE_14",
-            "TRANSCRIÇÃO_COMPLETA_PARTE_15"
+            "TRANSCRIÇÃO_COMPLETA_PARTE_15",
+            "TRANSCRIÇÃO_COMPLETA_PARTE_16",
+            "TRANSCRIÇÃO_COMPLETA_PARTE_17",
+            "TRANSCRIÇÃO_COMPLETA_PARTE_18",
+            "TRANSCRIÇÃO_COMPLETA_PARTE_19",
+            "TRANSCRIÇÃO_COMPLETA_PARTE_20"
         ]
         }
 
@@ -987,7 +1012,7 @@ if r.status_code == 200:
                     "messages": [
                         {"role": "user", "content": f"""Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}.
                          
-                         ***NÃO ESQUEÇA DE QUEBRAR A TRANSCRIÇÃO EM 15 PARTES OS BLOCOS DE TEXTO NÃO PODEM PASSAR DE 2000 LETRAS conforme especificado no schema***. 
+                         ***NÃO ESQUEÇA DE QUEBRAR A TRANSCRIÇÃO EM 20 PARTES OS BLOCOS DE TEXTO NÃO PODEM PASSAR DE 2000 LETRAS conforme especificado no schema***. 
                          AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5. 
 
                          Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura. 
@@ -1140,6 +1165,11 @@ if r.status_code == 200:
         transcricao_parte_13 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_13", "N/A"))
         transcricao_parte_14 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_14", "N/A"))
         transcricao_parte_15 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_15", "N/A"))
+        transcricao_parte_16 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_16", "N/A"))
+        transcricao_parte_17 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_17", "N/A"))
+        transcricao_parte_18 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_18", "N/A"))
+        transcricao_parte_19 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_19", "N/A"))
+        transcricao_parte_20 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_20", "N/A"))
 
         page_payload={
             "parent": {
@@ -1749,7 +1779,7 @@ if r.status_code == 200:
                         ]
                     }
                 },
-                                {
+                {
                     "object": "block",
                     "type": "paragraph",
                     "paragraph": {
@@ -1758,6 +1788,76 @@ if r.status_code == 200:
                                 "type": "text",
                                 "text": {
                                     "content": f"{transcricao_parte_15}"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"{transcricao_parte_16}"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"{transcricao_parte_17}"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"{transcricao_parte_18}"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"{transcricao_parte_19}"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"{transcricao_parte_20}"
                                 }
                             }
                         ]
