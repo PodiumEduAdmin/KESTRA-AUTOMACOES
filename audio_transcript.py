@@ -1776,7 +1776,8 @@ if r.status_code == 200:
                     <strong>FATURAMENTO_INICIAL:</strong> {cliente_0.get('FATURAMENTO_INICIAL')}<br>
                     <strong>FATURAMENTO_ATUAL:</strong> {cliente_0.get('FATURAMENTO_ATUAL')}<br>
                     <strong>ASSINANTES:</strong> {cliente_0.get('ASSINANTES')}<br>
-                    <strong>TEXTO:</strong> {cliente_0.get('TEXTO')}<br>
+                    <strong>DESCRIÇÃO:</strong> {cliente_0.get('DESCRIÇÃO')}<br>
+                    <strong>SUGESTÃO:</strong> {cliente_0.get('SUGESTÃO')}<br>
                     <strong>LINK:</strong> {cliente_0.get('LINK')}<br>
                 </p>
 
@@ -1787,7 +1788,8 @@ if r.status_code == 200:
                     <strong>FATURAMENTO_INICIAL:</strong> {cliente_1.get('FATURAMENTO_INICIAL')}<br>
                     <strong>FATURAMENTO_ATUAL:</strong> {cliente_1.get('FATURAMENTO_ATUAL')}<br>
                     <strong>ASSINANTES:</strong> {cliente_1.get('ASSINANTES')}<br>
-                    <strong>TEXTO:</strong> {cliente_1.get('TEXTO')}<br>
+                    <strong>DESCRIÇÃO:</strong> {cliente_1.get('DESCRIÇÃO')}<br>
+                    <strong>SUGESTÃO:</strong> {cliente_1.get('SUGESTÃO')}<br>
                     <strong>LINK:</strong> {cliente_1.get('LINK')}<br>
                 </p>
 
@@ -1798,7 +1800,8 @@ if r.status_code == 200:
                     <strong>FATURAMENTO_INICIAL:</strong> {cliente_2.get('FATURAMENTO_INICIAL')}<br>
                     <strong>FATURAMENTO_ATUAL:</strong> {cliente_2.get('FATURAMENTO_ATUAL')}<br>
                     <strong>ASSINANTES:</strong> {cliente_2.get('ASSINANTES')}<br>
-                    <strong>TEXTO:</strong> {cliente_2.get('TEXTO')}<br>
+                    <strong>DESCRIÇÃO:</strong> {cliente_2.get('DESCRIÇÃO')}<br>
+                    <strong>SUGESTÃO:</strong> {cliente_2.get('SUGESTÃO')}<br>
                     <strong>LINK:</strong> {cliente_2.get('LINK')}<br>
                 </p>
 
