@@ -35,6 +35,14 @@ llm = ChatGoogleGenerativeAI(
     max_retries=2,
 )
 
+# Inicialização do Modelo
+llm_basic = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    temperature=0,
+    max_tokens=None, # Deixa o LLM decidir o melhor
+    timeout=None,    # Deixa o LLM decidir o melhor
+    max_retries=2,
+)
 # url = "https://podium.3c.plus/api/v1/calls/69176b63faa55307c6629ebd/recording"
 
 url = os.environ['URL']
@@ -100,17 +108,18 @@ def get_depoiments():
 
     depoimentos_finais = []
     for page in results:
-        try:
-            depoimentos_finais.append(
-                {
-                    "CIDADE": (page['properties'].get('Cidade').get('place').get('name')),
-                    "FATURAMENTO":(page['properties'].get('Fat. Inicial').get('number')),
-                    "TEXTO":str([item.get('text').get('content') for item in page['properties'].get('Texto').get('rich_text')]),
-                    "Link":(page['properties'].get('Link').get('url'))
-                })
-            
-        except:
-            continue
+
+        depoimentos_finais.append(
+            {
+            "NOME": page['properties'].get('Nome').get('title')[0].get('plain_text') if page['properties'].get('Nome').get('title')[0] else None,
+            "CIDADE": page['properties'].get('Cidade').get('place').get('name') if page['properties'].get('Cidade').get('place') else None,
+            "FATURAMENTO_INICIAL":page['properties'].get('Fat. Inicial').get('number') if page['properties'].get('Fat. Atual') else None,
+            "FATURAMENTO_ATUAL":(page['properties'].get('Fat. Atual').get('number')) if (page['properties'].get('Fat. Atual').get('number')) else "",
+            "ASSINANTES":(page['properties'].get('Assinantes').get('number')) if (page['properties'].get('Fat. Atual').get('number')) else "",
+            "TEXTO":str([item.get('text').get('content') for item in page['properties'].get('Texto').get('rich_text')]) if str([item.get('text').get('content') for item in page['properties'].get('Texto').get('rich_text')]) else "",
+            "Link":(page['properties'].get('Link').get('url')) if (page['properties'].get('Link').get('url')) else ""
+        })
+
     return depoimentos_finais
 
 # --- INÍCIO DO FLUXO PRINCIPAL ---
@@ -143,7 +152,7 @@ if r.status_code == 200:
     
     try:
         print("⏳ 1/3: Enviando áudio para transcrição completa...")
-        response_transcription = llm.invoke([transcription_message])
+        response_transcription = llm_basic.invoke([transcription_message])
         full_transcript = response_transcription.content
         print("✅ 1/3: Transcrição concluída. Quebrando em chunks para análise...")
 
@@ -165,7 +174,7 @@ if r.status_code == 200:
                 HumanMessage(f"RESUMA: {chunk}")
             ]
             
-            response_summary = llm.invoke(summary_prompt)
+            response_summary = llm_basic.invoke(summary_prompt)
             summarized_chunks.append(response_summary.content)
 
         # 3. ANÁLISE FINAL (CONCATENAÇÃO DOS RESUMOS + PROMPT ESTRUTURADO)
@@ -829,7 +838,9 @@ if r.status_code == 200:
             "8. DEPOIMENTO_CLIENTE": {
             "type": "object",
             "description": "Informações relevantes do Depoimento de Cliente encontrado.",
-            "properties": {
+            "properties": [
+                {
+                
                 "NOME": {
                     "type": "string",
                     "description": "Nome do cliente no depoimento."
@@ -858,7 +869,8 @@ if r.status_code == 200:
                     "type": "string",
                     "description": "URL do link para o depoimento original."
                 }
-            },
+            }
+            ],
             "required": [
                 "NOME",
                 "CIDADE",
@@ -966,7 +978,7 @@ if r.status_code == 200:
 
         result = agent.invoke({
                     "messages": [
-                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}. Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema, AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5. Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura. Avalie os depoimentos dos nossos clientes {depoimentos} extraia os exemplos que melhor se encaixam no perfil do lead, isso será usado pelo clouser no processo de venda."}
+                        {"role": "user", "content": f"Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido. A transcrição completa é: {full_transcript}. Não esqueça de quebrar a transcrição em 15 partes conforme especificado no schema, AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5. Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura. Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia os exemplos que melhor se encaixam com perfil do lead da transcrição, dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início, isso será usado pelo clouser no processo de venda."} 
                     ]
                 })
         
