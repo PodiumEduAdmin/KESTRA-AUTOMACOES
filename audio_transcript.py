@@ -5,7 +5,7 @@ import requests
 import re
 from langchain.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_google_vertexai import ChatVertexAI
+# from langchain_google_vertexai import ChatVertexAI
 from langchain_core.exceptions import OutputParserException 
 from langchain.agents import create_agent
 from langchain.agents.structured_output import ToolStrategy
@@ -28,7 +28,7 @@ api_pipedrive = PipedriveAPI(apikey_pipe)
 # os.environ["GOOGLE_API_KEY"] = api_key
 
 # Inicialização do Modelo
-llm = ChatVertexAI(
+llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-pro",
     temperature=0,
     max_tokens=None, # Deixa o LLM decidir o melhor
@@ -37,7 +37,7 @@ llm = ChatVertexAI(
 )
 
 # Inicialização do Modelo
-llm_basic = ChatVertexAI(
+llm_basic = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     temperature=0,
     max_tokens=None, # Deixa o LLM decidir o melhor
