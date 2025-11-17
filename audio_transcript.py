@@ -15,6 +15,7 @@ from CLASSES.notion_class import NotiondriveAPI
 from CLASSES.pipe_class import PipedriveAPI
 import datetime as dt
 import json
+import sys
 
 # --- Configurações Iniciais ---
 # dotenv.load_dotenv("./.env")
@@ -1033,7 +1034,7 @@ if r.status_code == 200:
                     -> Dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início e adicione uma breve descrição do motivo da escolha do vídeo o porquê aquele vídeo se encaixa no contexto do lead, também gere uma sujestão (NÃO PRECISA CITAR NOMES) de como a pessoa que tentará a venda deve apresentar o deppoimento para o lead, isso será usado pelo clouser no processo de venda.***
                     
                     ***INSTRUÇÕES PARA O TEXTO DA TRANSCRIÇÃO: 
-                    
+
                     # TRANSCRIÇÃO COMPLETA DIVIDIDA EM PARTES (NÃO ALTERE O CONTEÚDO AO COPIAR PARA O JSON)
                     TRANSCRIÇÃO_PARTE_01: {chunks[0]}
                     TRANSCRIÇÃO_PARTE_02: {chunks[1]}
@@ -1064,8 +1065,9 @@ if r.status_code == 200:
                 ]
             })
     except Exception as e:
-        print(f"❌ Ocorreu um erro ao transcrever e analizar o áudio: {e}")
+        print(f"❌ Ocorreu um erro ao transcrever e analizar o áudio: {e}", file=sys.stderr)
         Kestra.outputs({"finalizado": "FINALIZADO_ERRO"})
+        sys.exit(1)
     # Kestra.outputs({"response": result["structured_response"]})
 
     # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS PARA TESTES---
@@ -1557,7 +1559,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"Citações exatas do lead:\n{Tempertura_IA_Citacoes}\n\nMotivo da classificação:\n{Tempertura_IA_Motivos}\n\nObservações úteis para o Closer:{Tempertura_IA_Obs}/n/n"
+                                    "content": f"Citações exatas do lead:\n{Tempertura_IA_Citacoes}\n\nMotivo da classificação:\n{Tempertura_IA_Motivos}\n\nObservações úteis para o Closer:/n{Tempertura_IA_Obs}/n/n"
                                 }
                             }
                         ]
@@ -1948,8 +1950,9 @@ if r.status_code == 200:
 
         print("Enviado para o Notion")
     except Exception as e:
-        print(f"❌ Ocorreu um erro ao enviar para o Notion: {e}")
+        print(f"❌ Ocorreu um erro ao enviar para o Notion: {e}", file=sys.stderr)
         Kestra.outputs({"finalizado": "FINALIZADO_ERRO"})
+        sys.exit(1)
     print("----------------------------\n")
 
     try:
@@ -2146,8 +2149,9 @@ if r.status_code == 200:
         }
 
         api_pipedrive.post_notes(payload_pipe)
-        print("Enviado para o Pipedrive")
+        print("Enviado para o Pipedrive", file=sys.stderr)
         Kestra.outputs({"finalizado": "FINALIZADO_SUCESSO"})
+        sys.exit(1)
     except Exception as e:
         print(f"❌ Ocorreu um erro ao enviar para o Pipe: {e}")
         Kestra.outputs({"finalizado": "FINALIZADO_ERRO"}) 
