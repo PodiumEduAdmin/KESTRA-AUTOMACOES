@@ -1075,25 +1075,6 @@ if r.status_code == 200:
     # Campanha="TESTE"
 
     try:
-        # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
-        cliente = os.environ['cliente'].strip()
-        SDR=os.environ['SDR'].strip()
-        Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
-        id_pipedrive=os.environ['id_pipedrive'].strip()
-        Link_da_Ligação= url
-        Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive.strip()}"
-        Faturamento=os.environ['Faturamento'].strip()
-        Campanha=os.environ['Campanha'].strip()
-
-        # CORREÇÃO 1: Tratar temperatura e perfil comportamental como string de forma segura
-        Tempertura_IA = str(result["structured_response"]["7. TEMPERATURA"]["temperatura_do_lead"]).replace("%", "").strip() 
-        Tempertura_IA_Citacoes = str(result["structured_response"]["7. TEMPERATURA"]["citacoes"]).strip() 
-        Tempertura_IA_Obs = str(result["structured_response"]["7. TEMPERATURA"]["observacao_closer"]).strip()
-        Tempertura_IA_Motivos = str(result["structured_response"]["7. TEMPERATURA"]["motivo_da_classificacao"]).strip()
-        Disc_IA = str(result["structured_response"]["6. PERFIL COMPORTAMENTAL"]["padrao_comportamental"]).replace("🔵", "").replace("#", "").strip()
-
-        # NO SEU CÓDIGO PYTHON (Onde as variáveis são preenchidas)
-
         def get_safe_str(data_dict, key, default="N/A"):
             """Extrai um valor do dicionário, tratando listas e sets como strings seguras."""
             value = data_dict.get(key, default)
@@ -1107,6 +1088,26 @@ if r.status_code == 200:
                 return str(value).replace("🔵", "").replace("🔴", "").replace("🟡", "").replace("🟢", "").replace("#", "").strip()
 
             return str(value)
+        
+        # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
+        cliente = os.environ['cliente'].strip()
+        SDR=os.environ['SDR'].strip()
+        Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
+        id_pipedrive=os.environ['id_pipedrive'].strip()
+        Link_da_Ligação= url
+        Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive.strip()}"
+        Faturamento=os.environ['Faturamento'].strip()
+        Campanha=os.environ['Campanha'].strip()
+
+        temp=result["structured_response"]["7. TEMPERATURA"]
+        # CORREÇÃO 1: Tratar temperatura e perfil comportamental como string de forma segura
+        Tempertura_IA = str(result["structured_response"]["7. TEMPERATURA"]["temperatura_do_lead"]).replace("%", "").strip() 
+        Tempertura_IA_Citacoes = get_safe_str(temp,"citacoes")
+        Tempertura_IA_Obs = get_safe_str(temp,"observacao_closer")
+        Tempertura_IA_Motivos = get_safe_str(temp,"motivo_da_classificacao")
+        Disc_IA = str(result["structured_response"]["6. PERFIL COMPORTAMENTAL"]["padrao_comportamental"]).replace("🔵", "").replace("#", "").strip()
+
+        # NO SEU CÓDIGO PYTHON (Onde as variáveis são preenchidas)
 
         # --- VARIAVEIS DEPOIMENTOS ---
         DEPOIMENTOS_LIST = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]
