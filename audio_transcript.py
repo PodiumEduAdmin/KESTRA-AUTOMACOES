@@ -5,6 +5,7 @@ import requests
 import re
 from langchain.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_vertexai import ChatVertexAI
 from langchain_core.exceptions import OutputParserException 
 from langchain.agents import create_agent
 from langchain.agents.structured_output import ToolStrategy
@@ -27,23 +28,23 @@ api_pipedrive = PipedriveAPI(apikey_pipe)
 # os.environ["GOOGLE_API_KEY"] = api_key
 
 # Inicialização do Modelo
-llm = ChatGoogleGenerativeAI(
+llm = ChatVertexAI(
     model="gemini-2.5-pro",
     temperature=0,
     max_tokens=None, # Deixa o LLM decidir o melhor
-    timeout=None,    # Deixa o LLM decidir o melhor
+    # timeout=None,    # Deixa o LLM decidir o melhor
     max_retries=2,
 )
 
 # Inicialização do Modelo
-llm_basic = ChatGoogleGenerativeAI(
+llm_basic = ChatVertexAI(
     model="gemini-2.5-flash",
     temperature=0,
     max_tokens=None, # Deixa o LLM decidir o melhor
-    timeout=None,    # Deixa o LLM decidir o melhor
+    # timeout=None,    # Deixa o LLM decidir o melhor
     max_retries=2,
 )
-# url = "https://podium.3c.plus/api/v1/calls/69176b63faa55307c6629ebd/recording"
+# url = "https://podium.3c.plus/api/v1/calls/691b2a79785f9240473f0f39/recording"
 
 url = os.environ['URL']
 
@@ -1291,89 +1292,6 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": "🎥 DEPOIMENTOS DE CLIENTES"
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "object": "block",
-                    "type": "paragraph",
-                    "paragraph": {
-                        "rich_text": [
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": f"NOME:{cliente_0.get('NOME')}\nCIDADE:{cliente_0.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_0.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_0.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_0.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_0.get('DESCRIÇÃO')}\nSUGESTÃO:{cliente_0.get('SUGESTÃO')}\n"
-                                }
-                            },
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": f"Link do Depoimento",
-                                    "link": {
-                                        "url": cliente_0.get('LINK')
-                                    }
-                                }
-                            }   
-                        ]
-                    }
-                },
-                {
-                    "object": "block",
-                    "type": "paragraph",
-                    "paragraph": {
-                        "rich_text": [
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": f"NOME:{cliente_1.get('NOME')}\nCIDADE:{cliente_1.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_1.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_1.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_1.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_1.get('DESCRIÇÃO')}\nSUGESTÃO:{cliente_1.get('SUGESTÃO')}\n"
-                                }
-                            },
-                                                        {
-                                "type": "text",
-                                "text": {
-                                    "content": f"Link do Depoimento",
-                                    "link": {
-                                        "url": cliente_1.get('LINK')
-                                    }
-                                }
-                            }   
-                        ]
-                    }
-                },
-                {
-                    "object": "block",
-                    "type": "paragraph",
-                    "paragraph": {
-                        "rich_text": [
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": f"NOME:{cliente_2.get('NOME')}\nCIDADE:{cliente_2.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_2.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_2.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_2.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_2.get('DESCRIÇÃO')}\nSUGESTÃO:{cliente_2.get('SUGESTÃO')}\n"
-                                }
-                            },
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": f"Link do Depoimento",
-                                    "link": {
-                                        "url": cliente_2.get('LINK')
-                                    }
-                                }
-                            }                            
-                        ]
-                    }
-                },
-                {
-                    "object": "block",
-                    "type": "heading_2",
-                    "heading_2": {
-                        "rich_text": [
-                            {
-                                "type": "text",
-                                "text": {
                                     "content": "📋 ANÁLISE DE LEAD — PERFIL DO AVATAR"
                                 }
                             }
@@ -1603,6 +1521,103 @@ if r.status_code == 200:
                                     "content": f"4. 📌 Feedback brutalmente direto sobre a qualidade analisada:\n{feedback_direto_escassez}\n\n5. 🛠 Sugestão prática de melhoria (se nota < 5):\n{sugestao_melhoria_escassez}\n"
                                 }
                             }
+                        ]
+                    }
+                },
+                                {
+                    "object": "block",
+                    "type": "heading_2",
+                    "heading_2": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"🔥 TEMPERATURA LEAD: {Tempertura_IA.strip()}"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "heading_2",
+                    "heading_2": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": "🎥 DEPOIMENTOS DE CLIENTES"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"NOME:{cliente_0.get('NOME')}\nCIDADE:{cliente_0.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_0.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_0.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_0.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_0.get('DESCRIÇÃO')}\nSUGESTÃO:{cliente_0.get('SUGESTÃO')}\n"
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"Link do Depoimento",
+                                    "link": {
+                                        "url": cliente_0.get('LINK')
+                                    }
+                                }
+                            }   
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"NOME:{cliente_1.get('NOME')}\nCIDADE:{cliente_1.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_1.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_1.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_1.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_1.get('DESCRIÇÃO')}\nSUGESTÃO:{cliente_1.get('SUGESTÃO')}\n"
+                                }
+                            },
+                                                        {
+                                "type": "text",
+                                "text": {
+                                    "content": f"Link do Depoimento",
+                                    "link": {
+                                        "url": cliente_1.get('LINK')
+                                    }
+                                }
+                            }   
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"NOME:{cliente_2.get('NOME')}\nCIDADE:{cliente_2.get('CIDADE')}\nFATURAMENTO_INICIAL:{cliente_2.get('FATURAMENTO')}\nFATURAMENTO_ATUAL:{cliente_2.get('FATURAMENTO_ATUAL')}\nASSINANTES:{cliente_2.get('ASSINANTES')}\nDESCRIÇÃO:{cliente_2.get('DESCRIÇÃO')}\nSUGESTÃO:{cliente_2.get('SUGESTÃO')}\n"
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"Link do Depoimento",
+                                    "link": {
+                                        "url": cliente_2.get('LINK')
+                                    }
+                                }
+                            }                            
                         ]
                     }
                 },
@@ -1913,46 +1928,10 @@ if r.status_code == 200:
         payload_pipe = {
             "deal_id": id_pipedrive,
             "content": f"""
-                <h3>DEPOIMENTOS DE CLIENTES SIMILARES</h3>
-                <h2>EXEMPLO 1</h2>
-                <p>
-                    <strong>NOME:</strong> {cliente_0.get('NOME')}<br>
-                    <strong>CIDADE:</strong> {cliente_0.get('CIDADE')}<br>
-                    <strong>FATURAMENTO_INICIAL:</strong> {cliente_0.get('FATURAMENTO_INICIAL')}<br>
-                    <strong>FATURAMENTO_ATUAL:</strong> {cliente_0.get('FATURAMENTO_ATUAL')}<br>
-                    <strong>ASSINANTES:</strong> {cliente_0.get('ASSINANTES')}<br>
-                    <strong>DESCRIÇÃO:</strong> {cliente_0.get('DESCRIÇÃO')}<br>
-                    <strong>SUGESTÃO:</strong> {cliente_0.get('SUGESTÃO')}<br>
-                    <strong>LINK:</strong> {cliente_0.get('LINK')}<br>
-                </p>
-
-                <h2>EXEMPLO 2</h2>
-                <p>
-                    <strong>NOME:</strong> {cliente_1.get('NOME')}<br>
-                    <strong>CIDADE:</strong> {cliente_1.get('CIDADE')}<br>
-                    <strong>FATURAMENTO_INICIAL:</strong> {cliente_1.get('FATURAMENTO_INICIAL')}<br>
-                    <strong>FATURAMENTO_ATUAL:</strong> {cliente_1.get('FATURAMENTO_ATUAL')}<br>
-                    <strong>ASSINANTES:</strong> {cliente_1.get('ASSINANTES')}<br>
-                    <strong>DESCRIÇÃO:</strong> {cliente_1.get('DESCRIÇÃO')}<br>
-                    <strong>SUGESTÃO:</strong> {cliente_1.get('SUGESTÃO')}<br>
-                    <strong>LINK:</strong> {cliente_1.get('LINK')}<br>
-                </p>
-
-                <h2>EXEMPLO 3</h2>
-                <p>
-                    <strong>NOME:</strong> {cliente_2.get('NOME')}<br>
-                    <strong>CIDADE:</strong> {cliente_2.get('CIDADE')}<br>
-                    <strong>FATURAMENTO_INICIAL:</strong> {cliente_2.get('FATURAMENTO_INICIAL')}<br>
-                    <strong>FATURAMENTO_ATUAL:</strong> {cliente_2.get('FATURAMENTO_ATUAL')}<br>
-                    <strong>ASSINANTES:</strong> {cliente_2.get('ASSINANTES')}<br>
-                    <strong>DESCRIÇÃO:</strong> {cliente_2.get('DESCRIÇÃO')}<br>
-                    <strong>SUGESTÃO:</strong> {cliente_2.get('SUGESTÃO')}<br>
-                    <strong>LINK:</strong> {cliente_2.get('LINK')}<br>
-                </p>
-
                 <h3>&#x1F4CB; ANÁLISE DE LEAD &mdash; PERFIL DO AVATAR</h3>
 
                 <p>
+                    <strong>Temperatura:</strong> {Tempertura_IA}<br>
                     <strong>1. Conhece o produto ou o Lincohn?</strong> {conhece_produto_ou_lincohn}<br>
                     <strong>2. Faturamento mensal estimado:</strong> {faturamento_mensal_estimado}<br>
                     <strong>3. Tamanho da equipe:</strong> {tamanho_da_equipe}<br>
@@ -2067,6 +2046,44 @@ if r.status_code == 200:
 
                 <hr>
 
+                <h3>DEPOIMENTOS DE CLIENTES SIMILARES</h3>
+
+                <h2>EXEMPLO 1</h2>
+
+                <p>
+                    <strong>NOME:</strong> {cliente_0.get('NOME')}<br>
+                    <strong>CIDADE:</strong> {cliente_0.get('CIDADE')}<br>
+                    <strong>FATURAMENTO_INICIAL:</strong> {cliente_0.get('FATURAMENTO_INICIAL')}<br>
+                    <strong>FATURAMENTO_ATUAL:</strong> {cliente_0.get('FATURAMENTO_ATUAL')}<br>
+                    <strong>ASSINANTES:</strong> {cliente_0.get('ASSINANTES')}<br>
+                    <strong>DESCRIÇÃO:</strong> {cliente_0.get('DESCRIÇÃO')}<br>
+                    <strong>SUGESTÃO:</strong> {cliente_0.get('SUGESTÃO')}<br>
+                    <strong>LINK:</strong> {cliente_0.get('LINK')}<br>
+                </p>
+
+                <h2>EXEMPLO 2</h2>
+                <p>
+                    <strong>NOME:</strong> {cliente_1.get('NOME')}<br>
+                    <strong>CIDADE:</strong> {cliente_1.get('CIDADE')}<br>
+                    <strong>FATURAMENTO_INICIAL:</strong> {cliente_1.get('FATURAMENTO_INICIAL')}<br>
+                    <strong>FATURAMENTO_ATUAL:</strong> {cliente_1.get('FATURAMENTO_ATUAL')}<br>
+                    <strong>ASSINANTES:</strong> {cliente_1.get('ASSINANTES')}<br>
+                    <strong>DESCRIÇÃO:</strong> {cliente_1.get('DESCRIÇÃO')}<br>
+                    <strong>SUGESTÃO:</strong> {cliente_1.get('SUGESTÃO')}<br>
+                    <strong>LINK:</strong> {cliente_1.get('LINK')}<br>
+                </p>
+
+                <h2>EXEMPLO 3</h2>
+                <p>
+                    <strong>NOME:</strong> {cliente_2.get('NOME')}<br>
+                    <strong>CIDADE:</strong> {cliente_2.get('CIDADE')}<br>
+                    <strong>FATURAMENTO_INICIAL:</strong> {cliente_2.get('FATURAMENTO_INICIAL')}<br>
+                    <strong>FATURAMENTO_ATUAL:</strong> {cliente_2.get('FATURAMENTO_ATUAL')}<br>
+                    <strong>ASSINANTES:</strong> {cliente_2.get('ASSINANTES')}<br>
+                    <strong>DESCRIÇÃO:</strong> {cliente_2.get('DESCRIÇÃO')}<br>
+                    <strong>SUGESTÃO:</strong> {cliente_2.get('SUGESTÃO')}<br>
+                    <strong>LINK:</strong> {cliente_2.get('LINK')}<br>
+                </p>
                 <h3>TRANSCRIÇÃO COMPLETA DA LIGAÇÃO</h3>
 
                 <p>
