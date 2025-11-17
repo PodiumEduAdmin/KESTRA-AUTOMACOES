@@ -16,12 +16,12 @@ import datetime as dt
 import json
 
 # --- Configurações Iniciais ---
-dotenv.load_dotenv("./.env")
-api_key = os.getenv('GOOGLE_API')
-apikey_pipe = os.getenv("API_KEY")
-notion_token = os.getenv("NOTION_TOKEN")
-# apikey_pipe = os.environ["apikey_pipe"]
-# notion_token = os.environ['NOTION_TOKEN']
+# dotenv.load_dotenv("./.env")
+# api_key = os.getenv('GOOGLE_API')
+# apikey_pipe = os.getenv("API_KEY")
+# notion_token = os.getenv("NOTION_TOKEN")
+apikey_pipe = os.environ["apikey_pipe"]
+notion_token = os.environ['NOTION_TOKEN']
 api_notion = NotiondriveAPI(notion_token)
 api_pipedrive = PipedriveAPI(apikey_pipe)
 # os.environ["GOOGLE_API_KEY"] = api_key
@@ -43,9 +43,9 @@ llm_basic = ChatGoogleGenerativeAI(
     timeout=None,    # Deixa o LLM decidir o melhor
     max_retries=2,
 )
-url = "https://podium.3c.plus/api/v1/calls/69176b63faa55307c6629ebd/recording"
+# url = "https://podium.3c.plus/api/v1/calls/69176b63faa55307c6629ebd/recording"
 
-# url = os.environ['URL']
+url = os.environ['URL']
 
 # --- Funções Auxiliares para Chunking ---
 
@@ -1062,24 +1062,24 @@ if r.status_code == 200:
         # Kestra.outputs({"response": result["structured_response"]})
 
         # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS PARA TESTES---
-        cliente = "VICTOR TESTE"
-        SDR="VICTOR TESTE"
-        Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
-        id_pipedrive=60459
-        Link_da_Ligação= url
-        Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
-        Faturamento="até R$15.000"
-        Campanha="TESTE"
-
-        # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
-        # cliente = os.environ['cliente'] 
-        # SDR=os.environ['SDR']
+        # cliente = "VICTOR TESTE"
+        # SDR="VICTOR TESTE"
         # Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
-        # id_pipedrive=os.environ['id_pipedrive']
+        # id_pipedrive=60459
         # Link_da_Ligação= url
         # Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
-        # Faturamento=os.environ['Faturamento']
-        # Campanha=os.environ['Campanha']
+        # Faturamento="até R$15.000"
+        # Campanha="TESTE"
+
+        # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
+        cliente = os.environ['cliente'] 
+        SDR=os.environ['SDR']
+        Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
+        id_pipedrive=os.environ['id_pipedrive']
+        Link_da_Ligação= url
+        Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
+        Faturamento=os.environ['Faturamento']
+        Campanha=os.environ['Campanha']
 
         # CORREÇÃO 1: Tratar temperatura e perfil comportamental como string de forma segura
         Tempertura_IA = str(result["structured_response"]["7. TEMPERATURA"]["temperatura_do_lead"]).replace("%", "").strip() 
