@@ -44,7 +44,7 @@ llm_basic = ChatGoogleGenerativeAI(
     # timeout=None,    # Deixa o LLM decidir o melhor
     max_retries=2,
 )
-# url = "https://podium.3c.plus/api/v1/calls/691b2a79785f9240473f0f39/recording"
+# url = "https://podium.3c.plus/api/v1/calls/691b59e6ace00e6b66712c2a/recording"
 
 url = os.environ['URL']
 
@@ -1061,7 +1061,7 @@ if r.status_code == 200:
             })
     except Exception as e:
         print(f"❌ Ocorreu um erro ao transcrever e analizar o áudio: {e}")
-
+        Kestra.outputs({"finalizado": "FINALIZADO_ERRO"})
     # Kestra.outputs({"response": result["structured_response"]})
 
     # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS PARA TESTES---
@@ -1927,7 +1927,7 @@ if r.status_code == 200:
         print("Enviado para o Notion")
     except Exception as e:
         print(f"❌ Ocorreu um erro ao enviar para o Notion: {e}")
-
+        Kestra.outputs({"finalizado": "FINALIZADO_ERRO"})
     print("----------------------------\n")
 
     try:
@@ -2115,9 +2115,10 @@ if r.status_code == 200:
 
         api_pipedrive.post_notes(payload_pipe)
         print("Enviado para o Pipedrive")
-
+        Kestra.outputs({"finalizado": "FINALIZADO_SUCESSO"})
     except Exception as e:
-        print(f"❌ Ocorreu um erro ao enviar para o Pipe: {e}")    
+        print(f"❌ Ocorreu um erro ao enviar para o Pipe: {e}")
+        Kestra.outputs({"finalizado": "FINALIZADO_ERRO"}) 
 #     except OutputParserException as e:
 #         print(f"❌ Erro de Transcrição/LangChain: {e}")
 #     except Exception as e:
@@ -2126,5 +2127,6 @@ if r.status_code == 200:
 else:
     # Caso a requisição HTTP falhe
     print(f"❌ Erro ao baixar o áudio. Status Code: {r.status_code}")
+    Kestra.outputs({"finalizado": "FINALIZADO_ERRO"})
 
 
