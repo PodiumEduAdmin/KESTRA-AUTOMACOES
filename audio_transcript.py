@@ -1559,7 +1559,7 @@ if r.status_code == 200:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": f"Citações exatas do lead:\n{Tempertura_IA_Citacoes}\n\nMotivo da classificação:\n{Tempertura_IA_Motivos}\n\nObservações úteis para o Closer:/n{Tempertura_IA_Obs}/n/n"
+                                    "content": f"Citações exatas do lead:\n{Tempertura_IA_Citacoes}\n\nMotivo da classificação:\n{Tempertura_IA_Motivos}\n\nObservações úteis para o Closer:/n{Tempertura_IA_Obs}/n"
                                 }
                             }
                         ]
@@ -1962,7 +1962,6 @@ if r.status_code == 200:
                 <h3>&#x1F4CB; ANÁLISE DE LEAD &mdash; PERFIL DO AVATAR</h3>
 
                 <p>
-                    <strong>Temperatura:</strong> {Tempertura_IA}<br>
                     <strong>1. Conhece o produto ou o Lincohn?</strong> {conhece_produto_ou_lincohn}<br>
                     <strong>2. Faturamento mensal estimado:</strong> {faturamento_mensal_estimado}<br>
                     <strong>3. Tamanho da equipe:</strong> {tamanho_da_equipe}<br>
