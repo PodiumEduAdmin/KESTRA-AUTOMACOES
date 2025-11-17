@@ -1059,28 +1059,31 @@ if r.status_code == 200:
                     Dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início e adicione uma breve descrição do motivo da escolha do vídeo o porquê aquele vídeo se encaixa no contexto do lead, também gere uma sujestão (NÃO PRECISA CITAR NOMES) de como a pessoa que tentará a venda deve apresentar o deppoimento para o lead, isso será usado pelo clouser no processo de venda."""}
                 ]
             })
-        
-        # Kestra.outputs({"response": result["structured_response"]})
+    except Exception as e:
+        print(f"❌ Ocorreu um erro ao transcrever e analizar o áudio: {e}")
 
-        # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS PARA TESTES---
-        # cliente = "VICTOR TESTE"
-        # SDR="VICTOR TESTE"
-        # Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
-        # id_pipedrive=60459
-        # Link_da_Ligação= url
-        # Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
-        # Faturamento="até R$15.000"
-        # Campanha="TESTE"
+    # Kestra.outputs({"response": result["structured_response"]})
 
+    # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS PARA TESTES---
+    # cliente = "VICTOR TESTE"
+    # SDR="VICTOR TESTE"
+    # Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
+    # id_pipedrive=60459
+    # Link_da_Ligação= url
+    # Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
+    # Faturamento="até R$15.000"
+    # Campanha="TESTE"
+
+    try:
         # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
-        cliente = os.environ['cliente'] 
-        SDR=os.environ['SDR']
+        cliente = os.environ['cliente'].strip()
+        SDR=os.environ['SDR'].strip()
         Data_Make=dt.datetime.now().date().strftime('%Y-%m-%d') 
-        id_pipedrive=os.environ['id_pipedrive']
+        id_pipedrive=os.environ['id_pipedrive'].strip()
         Link_da_Ligação= url
-        Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive}"
-        Faturamento=os.environ['Faturamento']
-        Campanha=os.environ['Campanha']
+        Link_PIPEDRIVE=f"https://podiumeducacai.pipedrive.com/deal/{id_pipedrive.strip()}"
+        Faturamento=os.environ['Faturamento'].strip()
+        Campanha=os.environ['Campanha'].strip()
 
         # CORREÇÃO 1: Tratar temperatura e perfil comportamental como string de forma segura
         Tempertura_IA = str(result["structured_response"]["7. TEMPERATURA"]["temperatura_do_lead"]).replace("%", "").strip() 
@@ -1922,9 +1925,12 @@ if r.status_code == 200:
         Kestra.outputs({"response": result["structured_response"]})
 
         print("Enviado para o Notion")
+    except Exception as e:
+        print(f"❌ Ocorreu um erro ao enviar para o Notion: {e}")
 
-        print("----------------------------\n")
+    print("----------------------------\n")
 
+    try:
         payload_pipe = {
             "deal_id": id_pipedrive,
             "content": f"""
@@ -2109,10 +2115,13 @@ if r.status_code == 200:
 
         api_pipedrive.post_notes(payload_pipe)
         print("Enviado para o Pipedrive")
-    except OutputParserException as e:
-        print(f"❌ Erro de Transcrição/LangChain: {e}")
+
     except Exception as e:
-        print(f"❌ Ocorreu um erro ao invocar o modelo: {e}")
+        print(f"❌ Ocorreu um erro ao enviar para o Pipe: {e}")    
+#     except OutputParserException as e:
+#         print(f"❌ Erro de Transcrição/LangChain: {e}")
+#     except Exception as e:
+#         print(f"❌ Ocorreu um erro ao invocar o modelo: {e}")
 
 else:
     # Caso a requisição HTTP falhe
