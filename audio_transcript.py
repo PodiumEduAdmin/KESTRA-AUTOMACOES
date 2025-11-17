@@ -49,7 +49,7 @@ url = os.environ['URL']
 
 # --- Funções Auxiliares para Chunking ---
 
-def split_text_into_chunks(text, max_chars=1950, max_chunks=20): # Ajustado para 20 partes
+def split_text_into_chunks(text, max_chars=1900, max_chunks=20): # Ajustado para 20 partes
     """Divide um texto longo em chunks com limite de caracteres."""
     if not text:
         return [""] * max_chunks # Retorna 20 strings vazias se não houver texto
@@ -169,7 +169,7 @@ if r.status_code == 200:
         print("✅ 1/3: Transcrição concluída. Quebrando em chunks para análise...")
 
         # Quebra a transcrição completa em chunks de 2000 caracteres
-        chunks = split_text_into_chunks(full_transcript, max_chars=1950, max_chunks=20)
+        chunks = split_text_into_chunks(full_transcript, max_chars=1900, max_chunks=20)
         
         # 2. SUMARIZAÇÃO EM CHUNKS (Redução do Contexto)
         summarized_chunks = []

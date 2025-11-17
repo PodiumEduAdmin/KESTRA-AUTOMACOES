@@ -112,9 +112,9 @@ r = requests.get(url)
 
 if r.status_code == 200:
     
-    audio_bytes = r.content 
-    audio_mime_type = "audio/mpeg" 
-
+  audio_bytes = r.content 
+  audio_mime_type = "audio/mpeg" 
+  encoded_audio = base64.b64encode(audio_bytes).decode("utf-8")
 transcription_message = HumanMessage(
       content=[
           {
