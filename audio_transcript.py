@@ -1048,13 +1048,13 @@ if r.status_code == 200:
                     TRANSCRIÇÃO_PARTE_19: {chunks[18]}
                     TRANSCRIÇÃO_PARTE_20: {chunks[19]}
 
-                    ***INSTRUÇÃO: Use o conteúdo EXATO das partes TRANSCRIÇÃO_PARTE_01 a TRANSCRIÇÃO_PARTE_20 para preencher os campos TRANSCRIÇÃO_COMPLETA_PARTE_1 a TRANSCRIÇÃO_COMPLETA_PARTE_20 do JSON de saída. 
+                    ***INSTRUÇÃO 1: Use o conteúdo EXATO das partes TRANSCRIÇÃO_PARTE_01 a TRANSCRIÇÃO_PARTE_20 para preencher os campos TRANSCRIÇÃO_COMPLETA_PARTE_1 a TRANSCRIÇÃO_COMPLETA_PARTE_20 do JSON de saída. 
                     Mantenha o conteúdo EXATO, incluindo minutagem e identificadores de locutores (🟢SDR e 🟣CLIENTE).
                     Obrigatório: Insira uma quebra de linha (pular uma linha) sempre que o locutor mudar ou houver uma pausa significativa.
                     A transcrição deve ser fácil de ler, com os diálogos bem separados. Não adicione nenhum comentário ou texto extra.***
-                    
+
+                    ***INSTRUÇÃO 2:Sempre identificar os locutores e a minutágem nos diálogos🟢SDR e 🟣CLIENTE, use quebra de linhas entre os diálogos para facilitar a leitura.
                     AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5.
-                    Sempre identificar os locutores e a minutágem nos diálogos, use quebra de linhas entre os diálogos para facilitar a leitura.
                     Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia exemplos (no máximo 3) que melhor se pareçam com o perfil do lead da transcrição (use o campo TEXTO para comparar).
                     Dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início e adicione uma breve descrição do motivo da escolha do vídeo o porquê aquele vídeo se encaixa no contexto do lead, também gere uma sujestão (NÃO PRECISA CITAR NOMES) de como a pessoa que tentará a venda deve apresentar o deppoimento para o lead, isso será usado pelo clouser no processo de venda."""}
                 ]
@@ -1087,6 +1087,9 @@ if r.status_code == 200:
 
         # CORREÇÃO 1: Tratar temperatura e perfil comportamental como string de forma segura
         Tempertura_IA = str(result["structured_response"]["7. TEMPERATURA"]["temperatura_do_lead"]).replace("%", "").strip() 
+        Tempertura_IA_Citacoes = str(result["structured_response"]["7. TEMPERATURA"]["citacoes"]).strip() 
+        Tempertura_IA_Obs = str(result["structured_response"]["7. TEMPERATURA"]["observacao_closer"]).strip()
+        Tempertura_IA_Motivos = str(result["structured_response"]["7. TEMPERATURA"]["motivo_da_classificacao"]).strip()
         Disc_IA = str(result["structured_response"]["6. PERFIL COMPORTAMENTAL"]["padrao_comportamental"]).replace("🔵", "").replace("#", "").strip()
 
         # NO SEU CÓDIGO PYTHON (Onde as variáveis são preenchidas)
@@ -1536,6 +1539,20 @@ if r.status_code == 200:
                                 "type": "text",
                                 "text": {
                                     "content": f"🔥 TEMPERATURA LEAD: {Tempertura_IA.strip()}"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": f"Citações exatas do lead:\n{Tempertura_IA_Citacoes}\n\nMotivo da classificação:\n{Tempertura_IA_Motivos}\n\nObservações úteis para o Closer:{Tempertura_IA_Obs}/n/n"
                                 }
                             }
                         ]
@@ -2052,6 +2069,16 @@ if r.status_code == 200:
 
                 <hr>
 
+                <h3>&#x1F525;&#x1F9CA;&#x1F525;&#x1F9CA;&#x1F525;&#x1F9CA;&#x1F525;&#x1F9CA; DEFINIÇÃO DAS TEMPERATURAS</h3>
+
+                <p>
+                    <strong>Temperatura:</strong> {Tempertura_IA}<br>
+                    <strong>Motivo da Classificação:</strong> {Tempertura_IA_Motivos}<br>
+                    <strong>Citações do Lead:</strong> {Tempertura_IA_Citacoes}<br>
+                    <strong>Observações:> {Tempertura_IA_Obs}<br>
+                </p>
+
+
                 <h3>DEPOIMENTOS DE CLIENTES SIMILARES</h3>
 
                 <h2>EXEMPLO 1</h2>
@@ -2090,10 +2117,10 @@ if r.status_code == 200:
                     <strong>SUGESTÃO:</strong> {cliente_2.get('SUGESTÃO')}<br>
                     <strong>LINK:</strong> {cliente_2.get('LINK')}<br>
                 </p>
+
                 <h3>TRANSCRIÇÃO COMPLETA DA LIGAÇÃO</h3>
 
                 <p>
-                    &#x1F525;&#x1F9CA;&#x1F525;&#x1F9CA;&#x1F525;&#x1F9CA;&#x1F525;&#x1F9CA;<br>
                     {transcricao_parte_1}<br>
                     {transcricao_parte_2}<br>
                     {transcricao_parte_3}<br>
