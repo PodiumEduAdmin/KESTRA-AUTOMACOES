@@ -1026,6 +1026,14 @@ if r.status_code == 200:
                     {"role": "user", "content": f"""
                     Realize a análise NEPQ completa e extraia todas as informações no JSON Schema fornecido.
                     
+                     ***INSTRUÇÕES PARA O TEXTO DAS ANÁLISES: 
+                    -> Sempre identificar os locutores e a minutágem nos diálogos🟢SDR e 🟣CLIENTE, use quebra de linhas entre os diálogos para facilitar a leitura.
+                    -> AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5.
+                    -> Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia exemplos (no máximo 3) que melhor se pareçam com o perfil do lead da transcrição (use o campo TEXTO para comparar).
+                    -> Dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início e adicione uma breve descrição do motivo da escolha do vídeo o porquê aquele vídeo se encaixa no contexto do lead, também gere uma sujestão (NÃO PRECISA CITAR NOMES) de como a pessoa que tentará a venda deve apresentar o deppoimento para o lead, isso será usado pelo clouser no processo de venda.***
+                    
+                    ***INSTRUÇÕES PARA O TEXTO DA TRANSCRIÇÃO: 
+                    
                     # TRANSCRIÇÃO COMPLETA DIVIDIDA EM PARTES (NÃO ALTERE O CONTEÚDO AO COPIAR PARA O JSON)
                     TRANSCRIÇÃO_PARTE_01: {chunks[0]}
                     TRANSCRIÇÃO_PARTE_02: {chunks[1]}
@@ -1048,15 +1056,11 @@ if r.status_code == 200:
                     TRANSCRIÇÃO_PARTE_19: {chunks[18]}
                     TRANSCRIÇÃO_PARTE_20: {chunks[19]}
 
-                    ***INSTRUÇÃO 1: Use o conteúdo EXATO das partes TRANSCRIÇÃO_PARTE_01 a TRANSCRIÇÃO_PARTE_20 para preencher os campos TRANSCRIÇÃO_COMPLETA_PARTE_1 a TRANSCRIÇÃO_COMPLETA_PARTE_20 do JSON de saída. 
-                    Mantenha o conteúdo EXATO, incluindo minutagem e identificadores de locutores (🟢SDR e 🟣CLIENTE).
-                    Obrigatório: Insira uma quebra de linha (pular uma linha) sempre que o locutor mudar ou houver uma pausa significativa.
-                    A transcrição deve ser fácil de ler, com os diálogos bem separados. Não adicione nenhum comentário ou texto extra.***
-
-                    ***INSTRUÇÃO 2:Sempre identificar os locutores e a minutágem nos diálogos🟢SDR e 🟣CLIENTE, use quebra de linhas entre os diálogos para facilitar a leitura.
-                    AS NOTAS DE AVALIAÇÃO NÃO DEVEM SER QUEBRADAS, OU SEJA, APENAS NOTAS COM NÚMEROS INTEIROS ENTRE 1 E 5.
-                    Avalie os depoimentos dos nossos clientes neste Json:{depoimentos} extraia exemplos (no máximo 3) que melhor se pareçam com o perfil do lead da transcrição (use o campo TEXTO para comparar).
-                    Dê preferência para depoimentos cujo o cliente é da mesma cidade ou estado do Lead, e que o faturamento também esteja na mesma faixa de início e adicione uma breve descrição do motivo da escolha do vídeo o porquê aquele vídeo se encaixa no contexto do lead, também gere uma sujestão (NÃO PRECISA CITAR NOMES) de como a pessoa que tentará a venda deve apresentar o deppoimento para o lead, isso será usado pelo clouser no processo de venda."""}
+                    -> Use o conteúdo EXATO das partes TRANSCRIÇÃO_PARTE_01 a TRANSCRIÇÃO_PARTE_20 para preencher os campos TRANSCRIÇÃO_COMPLETA_PARTE_1 a TRANSCRIÇÃO_COMPLETA_PARTE_20 do JSON de saída.
+                    -> Mantenha o conteúdo EXATO, incluindo minutagem e identificadores de locutores (🟢SDR e 🟣CLIENTE).
+                    -> Obrigatório: Insira uma quebra de linha (pular uma linha) sempre que o locutor mudar ou houver uma pausa significativa.
+                    -> A transcrição deve ser fácil de ler, com os diálogos bem separados. Não adicione nenhum comentário ou texto extra.***
+                    """}
                 ]
             })
     except Exception as e:
