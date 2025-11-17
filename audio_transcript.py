@@ -2149,12 +2149,12 @@ if r.status_code == 200:
         }
 
         api_pipedrive.post_notes(payload_pipe)
-        print("Enviado para o Pipedrive", file=sys.stderr)
         Kestra.outputs({"finalizado": "FINALIZADO_SUCESSO"})
-        sys.exit(1)
+        
     except Exception as e:
-        print(f"❌ Ocorreu um erro ao enviar para o Pipe: {e}")
-        Kestra.outputs({"finalizado": "FINALIZADO_ERRO"}) 
+        print(f"❌ Ocorreu um erro ao enviar para o Pipe: {e}", file=sys.stderr)
+        Kestra.outputs({"finalizado": "FINALIZADO_ERRO"})
+        sys.exit(1)
 #     except OutputParserException as e:
 #         print(f"❌ Erro de Transcrição/LangChain: {e}")
 #     except Exception as e:
@@ -2164,5 +2164,6 @@ else:
     # Caso a requisição HTTP falhe
     print(f"❌ Erro ao baixar o áudio. Status Code: {r.status_code}")
     Kestra.outputs({"finalizado": "FINALIZADO_ERRO"})
+    sys.exit(1)
 
 
