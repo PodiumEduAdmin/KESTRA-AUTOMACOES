@@ -46,9 +46,9 @@ llm_basic = ChatGoogleGenerativeAI(
     # timeout=None,    # Deixa o LLM decidir o melhor
     max_retries=2,
 )
-url = "https://podium.3c.plus/api/v1/calls/691c7ff1bc30166d231a6b68/recording"
+# url = "https://podium.3c.plus/api/v1/calls/691c7ff1bc30166d231a6b68/recording"
 
-# url = os.environ['URL']
+url = os.environ['URL']
 
 # --- Funções Auxiliares para Chunking ---
 
