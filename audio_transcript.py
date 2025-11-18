@@ -1097,6 +1097,7 @@ if r.status_code == 200:
 
             return str(value)
         
+        print("Criando variáveis de propriedades Principais...")
         # --- VARIAVEIS DE PROPRIEDADES PRINCIPAIS ---
         cliente = os.environ['cliente'].strip()
         SDR=os.environ['SDR'].strip()
@@ -1117,6 +1118,8 @@ if r.status_code == 200:
 
         # NO SEU CÓDIGO PYTHON (Onde as variáveis são preenchidas)
 
+
+        print("Criando lista de depoimentos...")
         # --- VARIAVEIS DEPOIMENTOS ---
         DEPOIMENTOS_LIST = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]
 
@@ -1138,12 +1141,14 @@ if r.status_code == 200:
         cliente_1=cria_blocos_depoimentos(1)
         cliente_2=cria_blocos_depoimentos(2)
 
+        print("Criando VARIAVEIS DE NOTAS (DEIXE COMO FLOAT)...")
         # --- VARIAVEIS DE NOTAS (DEIXE COMO FLOAT) ---
         nota_investigacao = float(result["structured_response"]["1. INVESTIGAÇÃO"]["nota"]) 
         nota_descoberta = float(result["structured_response"]["2. DESCOBERTA"]["nota"]) 
         nota_interesse = float(result["structured_response"]["3. DESPERTE O INTERESSE"]["nota"]) 
         nota_escassez = float(result["structured_response"]["4. PROMOVEU A ESCASSEZ"]["nota"]) 
 
+        print("Criando VARIAVEIS DE PERFIL MKT...")
         # --- VARIAVEIS DE PERFIL MKT ---
         mkt_data = result["structured_response"]["5. PERFIL MKT (CAMPO NO PIPEDRIVE)"]
 
@@ -1154,6 +1159,7 @@ if r.status_code == 200:
         gerou_agendamento = get_safe_str(mkt_data, "observacao_agendamento", mkt_data.get("gerou_agendamento"))
         motivo_desqualificacao = get_safe_str(mkt_data, "motivo_desqualificacao")
 
+        print("Criando VARIAVEIS DE PERFIL COMPORTAMENTAL...")
         # --- VARIAVEIS DE PERFIL COMPORTAMENTAL ---
         perfil_data = result["structured_response"]["6. PERFIL COMPORTAMENTAL"]
 
@@ -1162,6 +1168,7 @@ if r.status_code == 200:
         erros_acertos_atendente = get_safe_str(perfil_data, "erros_acertos_atendente")
         orientacoes_praticas_closer = get_safe_str(perfil_data, "orientacoes_praticas_closer")
 
+        print("Criando VARIAVEIS DE INVESTIGAÇÃO...")
         # --- VARIAVEIS DE INVESTIGAÇÃO ---
         inv_data = result["structured_response"]["1. INVESTIGAÇÃO"]
 
@@ -1172,6 +1179,8 @@ if r.status_code == 200:
         aprofundamento_problemas_sdr = get_safe_str(inv_data, "aprofundamento_problemas_sdr")
         feedback_direto_investigacao = get_safe_str(inv_data, "feedback_direto")
         sugestao_melhoria_investigacao = get_safe_str(inv_data, "sugestao_melhoria")
+
+        print("VARIAVEIS DE DESCOBERTA DO SONHO ...")
         # --- VARIAVEIS DE DESCOBERTA DO SONHO ---
         dsc_data = result["structured_response"]["2. DESCOBERTA"]
 
@@ -1183,6 +1192,7 @@ if r.status_code == 200:
         feedback_direto_descoberta = str(dsc_data.get("feedback_direto", "N/A"))
         sugestao_melhoria_descoberta = str(dsc_data.get("sugestao_melhoria", "N/A"))
 
+        print("VARIAVEIS DE DESPERTE O INTERESSE ...")
         # --- VARIAVEIS DE DESPERTE O INTERESSE ---
         int_data = result["structured_response"]["3. DESPERTE O INTERESSE"]
 
@@ -1193,7 +1203,7 @@ if r.status_code == 200:
         feedback_direto_interesse = str(int_data.get("feedback_direto", "N/A"))
         sugestao_melhoria_interesse = str(int_data.get("sugestao_melhoria", "N/A"))
 
-
+        print("VARIAVEIS DE ESCASSEZ ...")
         # --- VARIAVEIS DE ESCASSEZ ---
         esc_data = result["structured_response"]["4. PROMOVEU A ESCASSEZ"]
 
@@ -1202,6 +1212,7 @@ if r.status_code == 200:
         feedback_direto_escassez = str(esc_data.get("feedback_direto", "N/A"))
         sugestao_melhoria_escassez = str(esc_data.get("sugestao_melhoria", "N/A"))
 
+        print("VARIAVEIS DE TRANSCRIÇÃO...")
         # --- VARIAVEIS DE TRANSCRIÇÃO ---
         transcricao_parte_1 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_1", "N/A"))
         transcricao_parte_2 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_2", "N/A"))
@@ -1224,6 +1235,7 @@ if r.status_code == 200:
         transcricao_parte_19 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_19", "N/A"))
         transcricao_parte_20 = str(result["structured_response"].get("TRANSCRIÇÃO_COMPLETA_PARTE_20", "N/A"))
 
+        print("Criando payload notion...")
         page_payload={
             "parent": {
                 # O ID do database deve ser o data_source_id (2693bbf5-b1e1-8108-b2fb-000bde2e95b5) 
@@ -1946,10 +1958,9 @@ if r.status_code == 200:
                 }
             ]
         }
-
+        print("Enviando para o Notion...")
         api_notion.create_page(page_payload)
         Kestra.outputs({"response": result["structured_response"]})
-
         print("Enviado para o Notion")
     except Exception as e:
         print(f"❌ Ocorreu um erro ao enviar para o Notion: {e}", file=sys.stderr)
@@ -1958,6 +1969,7 @@ if r.status_code == 200:
     print("----------------------------\n")
 
     try:
+        print("Criando payload Pipe...")
         payload_pipe = {
             "deal_id": id_pipedrive,
             "content": f"""
@@ -2148,7 +2160,7 @@ if r.status_code == 200:
                 </p>
                 """
         }
-
+        print("Enviando para o Pipe...")
         api_pipedrive.post_notes(payload_pipe)
         Kestra.outputs({"finalizado": "FINALIZADO_SUCESSO"})
         
