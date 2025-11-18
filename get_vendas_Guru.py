@@ -113,8 +113,8 @@ if __name__ == '__main__':
 
     while next_cursor:
         parametros_de_consulta = {
-        'ordered_at_ini': '2025-11-01',
-        'ordered_at_end': '2025-11-10',
+        'ordered_at_ini': '2025-11-11',
+        'ordered_at_end': '2025-11-18',
         'status[]': 'approved',
         'cursor' : f'{next_cursor}'
     }
@@ -196,16 +196,19 @@ if __name__ == '__main__':
     
     for i,tab in cilo1.iterrows():
         person=api.search_persons(tab['contact_email'],"email")
-        id=person.json().get('data').get('items')[0].get('item').get('id')
 
-        deals=api.get_deal(id)
-        # data = deals.json().get('data')[0].get('add_time')
-        # data_obj = dt.strptime(data, '%Y-%m-%dT%H:%M:%SZ').date().strftime('%Y-%m-%d')
+        if person.json().get('data').get('items') != []:
+            id=person.json().get('data').get('items')[0].get('item').get('id')
 
-        for j,item in enumerate(deals.json().get('data')):
-            cilo1.loc[i,f'ID_Pipedrive{j}'] = item.get('id')
-            cilo1.loc[i,f'Title_Pipedrive{j}'] = item.get('title')
-            cilo1.loc[i,f'Data_Pipedrive{j}'] =  dt.strptime(item.get('add_time'), '%Y-%m-%dT%H:%M:%SZ').date().strftime('%Y-%m-%d')
+            deals=api.get_deal(id)
+            # data = deals.json().get('data')[0].get('add_time')
+            # data_obj = dt.strptime(data, '%Y-%m-%dT%H:%M:%SZ').date().strftime('%Y-%m-%d')
 
-cilo1.columns
-cilo1.to_excel(r"vendas_guru.xlsx",index=False)
+            for j,item in enumerate(deals.json().get('data')):
+                cilo1.loc[i,f'ID_Pipedrive{j}'] = item.get('id')
+                cilo1.loc[i,f'Title_Pipedrive{j}'] = item.get('title')
+                cilo1.loc[i,f'Data_Pipedrive{j}'] =  dt.strptime(item.get('add_time'), '%Y-%m-%dT%H:%M:%SZ').date().strftime('%Y-%m-%d')
+        else:
+            cilo1.loc[i,f'OBS.'] = 'PESSOA_N_ENCONTRADA'
+
+cilo1.to_excel(r"vendas_guru_18_11.xlsx",index=False)

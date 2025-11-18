@@ -136,6 +136,7 @@ def get_depoiments():
 
     return depoimentos_finais
 
+print("✅ Fazendo download do áudio...")
 # --- INÍCIO DO FLUXO PRINCIPAL ---
 r = requests.get(url)
 
