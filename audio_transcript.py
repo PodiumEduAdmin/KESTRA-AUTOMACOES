@@ -16,6 +16,7 @@ from CLASSES.pipe_class import PipedriveAPI
 import datetime as dt
 import json
 import sys
+import shutil
 
 # --- Configurações Iniciais ---
 # dotenv.load_dotenv("./.env")
@@ -45,9 +46,9 @@ llm_basic = ChatGoogleGenerativeAI(
     # timeout=None,    # Deixa o LLM decidir o melhor
     max_retries=2,
 )
-# url = "https://podium.3c.plus/api/v1/calls/691b59e6ace00e6b66712c2a/recording"
+url = "https://podium.3c.plus/api/v1/calls/691c7ff1bc30166d231a6b68/recording"
 
-url = os.environ['URL']
+# url = os.environ['URL']
 
 # --- Funções Auxiliares para Chunking ---
 
