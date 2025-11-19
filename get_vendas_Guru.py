@@ -191,6 +191,11 @@ if __name__ == '__main__':
         # Verifica se 'x' é um dicionário; se for, tenta pegar 'cycle'. Se não for, retorna NaN.
         lambda x: x.get('doc') if isinstance(x, dict) else np.nan
     )
+    cilo1['status'] = cilo1['subscription'].apply(
+        # Verifica se 'x' é um dicionário; se for, tenta pegar 'cycle'. Se não for, retorna NaN.
+        lambda x: x.get('last_status') if isinstance(x, dict) else np.nan
+    )
+    cilo1=cilo1.query("status=='active'")
     API_KEY = os.getenv('API_KEY')
     api = PipedriveAPI(api_token=API_KEY)
     
@@ -210,5 +215,7 @@ if __name__ == '__main__':
                 cilo1.loc[i,f'Data_Pipedrive{j}'] =  dt.strptime(item.get('add_time'), '%Y-%m-%dT%H:%M:%SZ').date().strftime('%Y-%m-%d')
         else:
             cilo1.loc[i,f'OBS.'] = 'PESSOA_N_ENCONTRADA'
+cilo1.columns
+cilo1['subscription'][0].get('last_status')
 
 cilo1.to_excel(r"vendas_guru_18_11.xlsx",index=False)
