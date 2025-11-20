@@ -1121,28 +1121,62 @@ if r.status_code == 200:
 
         print("Criando lista de depoimentos...")
         # --- VARIAVEIS DEPOIMENTOS ---
-        DEPOIMENTOS_LIST = result["structured_response"]["8. DEPOIMENTO_CLIENTE"]
-
+        # 1. Tenta obter a lista. Se '8. DEPOIMENTO_CLIENTE' não existir, retorna uma lista vazia ([])
+        DEPOIMENTOS_LIST = result.get("structured_response", {}).get("8. DEPOIMENTO_CLIENTE", [])
         def cria_blocos_depoimentos(cliente_n):
-            # try:
-            cliente_data = result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]
+            try:
+                # Primeiro, verifique se o índice está dentro do limite da lista DEPOIMENTOS_LIST
+                if cliente_n >= len(DEPOIMENTOS_LIST):
+                    raise IndexError("Índice fora do limite da lista de depoimentos.")
+                    
+                # Acesso seguro ao item da lista
+                cliente_data = DEPOIMENTOS_LIST[cliente_n] 
 
-            cliente = {
-                "NOME": cliente_data.get("NOME", "N/A"),
-                "CIDADE": cliente_data.get("CIDADE", "N/A"),
-                "FATURAMENTO": cliente_data.get("FATURAMENTO_INICIAL", "N/A"),
-                "FATURAMENTO_ATUAL": cliente_data.get("FATURAMENTO_ATUAL", "N/A"),
+                cliente = {
+                    "NOME": cliente_data.get("NOME", "N/A"),
+                    "CIDADE": cliente_data.get("CIDADE", "N/A"),
+                    "FATURAMENTO": cliente_data.get("FATURAMENTO_INICIAL", "N/A"),
+                    "FATURAMENTO_ATUAL": cliente_data.get("FATURAMENTO_ATUAL", "N/A"),
+                    # Corrigido para .get() para evitar KeyError
+                    "ASSINANTES": cliente_data.get("ASSINANTES", 0), 
+                    "DESCRIÇÃO": cliente_data.get("DESCRIÇÃO", "N/A"),
+                    "SUGESTÃO": cliente_data.get("SUGESTÃO", "N/A"),
+                    "LINK": cliente_data.get("LINK", "N/A")
+                }
+            except IndexError as e:
+                # Captura o erro se o índice for muito alto ou a lista for vazia
+                print(f"Erro de índice (Depoimento {cliente_n}): {e}. Retornando dados padrão.")
+                cliente = {
+                    "NOME": "N/A", "CIDADE": "N/A", "FATURAMENTO": "N/A",
+                    "FATURAMENTO_ATUAL": "N/A", "ASSINANTES": 0, "DESCRIÇÃO": "N/A", 
+                    "SUGESTÃO": "N/A", "LINK": "N/A"
+                }
+            except KeyError as e:
+                # Captura se alguma das chaves internas falhar
+                print(f"Erro de chave (Depoimento {cliente_n}): Chave faltando {e}. Retornando dados padrão.")
+                cliente = {
+                    "NOME": "N/A", "CIDADE": "N/A", "FATURAMENTO": "N/A",
+                    "FATURAMENTO_ATUAL": "N/A", "ASSINANTES": 0, "DESCRIÇÃO": "N/A", 
+                    "SUGESTÃO": "N/A", "LINK": "N/A"
+                }
                 
-                # CORREÇÃO: Usar .get() para retornar 0 se 'ASSINANTES' não existir
-                # O segundo argumento de .get() é o valor padrão
-                "ASSINANTES": cliente_data.get("ASSINANTES", 0),
-                
-                "DESCRIÇÃO": cliente_data.get("DESCRIÇÃO", "N/A"),
-                "SUGESTÃO": cliente_data.get("SUGESTÃO", "N/A"),
-                "LINK": cliente_data.get("LINK", "N/A")
-            }
-
             return cliente
+        # 2. Verifica se a lista não está vazia antes de tentar acessar o índice
+        if DEPOIMENTOS_LIST:
+            # Assumindo que você usa esta função em um loop ou com índices fixos:
+            depoimento_1 = cria_blocos_depoimentos(0) # Exemplo de acesso ao primeiro item
+            
+            # Se você estiver iterando, o loop é o melhor lugar para o try/except:
+            # for cliente_n in range(len(DEPOIMENTOS_LIST)):
+            #     depoimento_data = cria_blocos_depoimentos(cliente_n)
+            
+            # ...
+        else:
+            print("Aviso: A lista de depoimentos está vazia. O modelo não gerou depoimentos.")
+            # Defina variáveis padrão ou pule a lógica que depende dos depoimentos
+
+        # --- FUNÇÃO CORRIGIDA COM PROTEÇÃO DE ÍNDICE ---
+ 
         
         cliente_0=cria_blocos_depoimentos(0)
         cliente_1=cria_blocos_depoimentos(1)
