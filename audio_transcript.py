@@ -1130,7 +1130,7 @@ if r.status_code == 200:
                 "CIDADE": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["CIDADE"],
                 "FATURAMENTO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["FATURAMENTO_INICIAL"],
                 "FATURAMENTO_ATUAL": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["FATURAMENTO_ATUAL"],
-                "ASSINANTES": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["ASSINANTES"],
+                "ASSINANTES": (result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["ASSINANTES"] | 0),
                 "DESCRIÇÃO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["DESCRIÇÃO"],
                 "SUGESTÃO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["SUGESTÃO"],
                 "LINK": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["LINK"]
