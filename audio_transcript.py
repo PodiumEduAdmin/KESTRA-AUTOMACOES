@@ -1125,18 +1125,22 @@ if r.status_code == 200:
 
         def cria_blocos_depoimentos(cliente_n):
             # try:
+            cliente_data = result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]
+
             cliente = {
-                "NOME": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["NOME"],
-                "CIDADE": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["CIDADE"],
-                "FATURAMENTO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["FATURAMENTO_INICIAL"],
-                "FATURAMENTO_ATUAL": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["FATURAMENTO_ATUAL"],
-                "ASSINANTES": (result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["ASSINANTES"] | 0),
-                "DESCRIÇÃO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["DESCRIÇÃO"],
-                "SUGESTÃO": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["SUGESTÃO"],
-                "LINK": result["structured_response"]["8. DEPOIMENTO_CLIENTE"][cliente_n]["LINK"]
+                "NOME": cliente_data.get("NOME", "N/A"),
+                "CIDADE": cliente_data.get("CIDADE", "N/A"),
+                "FATURAMENTO": cliente_data.get("FATURAMENTO_INICIAL", "N/A"),
+                "FATURAMENTO_ATUAL": cliente_data.get("FATURAMENTO_ATUAL", "N/A"),
+                
+                # CORREÇÃO: Usar .get() para retornar 0 se 'ASSINANTES' não existir
+                # O segundo argumento de .get() é o valor padrão
+                "ASSINANTES": cliente_data.get("ASSINANTES", 0),
+                
+                "DESCRIÇÃO": cliente_data.get("DESCRIÇÃO", "N/A"),
+                "SUGESTÃO": cliente_data.get("SUGESTÃO", "N/A"),
+                "LINK": cliente_data.get("LINK", "N/A")
             }
-            # except:
-            #     pass
 
             return cliente
         
