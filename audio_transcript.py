@@ -1302,8 +1302,8 @@ if r.status_code == 200:
                 "SDR": {
                     "rich_text": [
                         {
-                            "text": {
-                                "content": SDR.strip()
+                            "select": {
+                                "name": SDR.strip()
                             }
                         }
                     ]

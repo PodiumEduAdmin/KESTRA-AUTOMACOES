@@ -291,3 +291,14 @@ class PipedriveAPI:
         # ⚠️ Sugestão: Adicionar um print para confirmar ⚠️
         print(f"Nota criada com sucesso.")
         return response_post
+    
+    def get_activities(self,param):
+        endpoint="api/v2/activities"
+        # OBS: data agora contém a combinação de campos padrão e customizados (hashes)
+
+        response_get = self._request_api(
+            endpoint=endpoint,
+            method="GET",
+            query_params=param
+        )
+        return response_get
