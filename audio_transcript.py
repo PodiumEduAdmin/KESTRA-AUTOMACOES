@@ -1300,13 +1300,11 @@ if r.status_code == 200:
                     }
                 },
                 "SDR": {
-                    "rich_text": [
-                        {
-                            "select": {
-                                "name": SDR.strip()
-                            }
+                    {
+                        "select": {
+                            "name": SDR.strip()
                         }
-                    ]
+                    }
                 },
                 "Data Make": {
                     "date": {
